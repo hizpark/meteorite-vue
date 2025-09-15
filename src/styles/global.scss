@@ -1,0 +1,50 @@
+/* 重置 */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* 菜单布局 */
+.el-aside {
+  border-right: 1px solid var(--el-border-color); /* 全局变量，暗/亮模式自动生效 */
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+  overflow: hidden;
+}
+
+.el-aside.collapsed {
+  width: 64px !important;
+}
+
+.el-menu {
+  border-right: none;
+  height: 100%;
+}
+
+/* PC端折叠、响应式字体 */
+@media (max-width: 768px) {
+  .el-menu {
+    font-size: 14px;
+  }
+}
+
+/* 头部 */
+.el-header {
+  border-bottom: 1px solid var(--el-border-color);
+}
+
+.el-form-item--label-right .el-form-item__label {
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
