@@ -127,7 +127,6 @@
 
 <script>
 import { ref, watch } from 'vue'
-import logo from '@/assets/images/logo.svg'
 import { HomeFilled, User, Document } from '@element-plus/icons-vue'
 
 export default {
@@ -167,11 +166,7 @@ export default {
       emit('menuSelect', index)
     }
 
-    // Logo 引用 ------------------------------------------------------------
-    const logoRef = ref(logo)
-
     return {
-      logo: logoRef,
       drawerVisibleLocal,
       handleMenuSelect,
     }
