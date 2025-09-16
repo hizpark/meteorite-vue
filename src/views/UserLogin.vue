@@ -26,10 +26,9 @@
 
     <!-- 登录表单卡片 -->
     <el-card class="login-card no-border">
-      <h2 class="login-title">登录</h2>
       <el-form :model="form" ref="loginForm" label-width="0" @submit.prevent="handleLogin">
         <!-- 用户名 -->
-        <el-form-item>
+        <el-form-item prop="username" :rules="[{ required: true, message: '请输入用户名' }]">
           <el-input
             v-model="form.username"
             placeholder="用户名"
@@ -43,7 +42,7 @@
         </el-form-item>
 
         <!-- 密码 -->
-        <el-form-item>
+        <el-form-item prop="password" :rules="[{ required: true, message: '请输入密码' }]">
           <el-input
             v-model="form.password"
             type="password"
@@ -80,22 +79,12 @@ import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 
-// 表单数据
 const form = reactive({ username: '', password: '' })
-
-// 表单实例
 const loginForm = ref(null)
-
-// 路由
 const router = useRouter()
-
-// 用户状态管理
 const userStore = useUserStore()
-
-// loading 状态
 const loading = ref(false)
 
-// 登录方法
 const handleLogin = async () => {
   if (!form.username || !form.password) {
     ElMessage.warning('请输入用户名和密码')
@@ -126,12 +115,11 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-/* 左侧容器 */
 .login-container {
   height: 100%;
   padding: 40px;
   display: flex;
-  flex-direction: column; /* 品牌 + 表单 + footer */
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   transition: all 0.3s ease;
@@ -139,7 +127,7 @@ const handleLogin = async () => {
   max-height: 960px;
 }
 
-/* 品牌模块 */
+/* 品牌 */
 .brand {
   display: flex;
   flex-direction: column;
@@ -175,17 +163,15 @@ const handleLogin = async () => {
     transform 0.3s ease,
     box-shadow 0.3s ease;
 }
+
 .login-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
 }
 
-/* 登录标题 */
-.login-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: 500;
+/* 调整表单项之间的间距 */
+.login-container .el-form-item {
+  margin-bottom: 24px; /* 调整此值修改间距 */
 }
 
 /* 登录按钮 */
