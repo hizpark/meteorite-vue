@@ -18,6 +18,8 @@
 // Vue Router 核心导入 ------------------------------------------------------
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { useUserStore } from '@/stores/user'
+
 // 布局组件导入 -------------------------------------------------------------
 import AuthLayout from '../layouts/AuthLayout.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
@@ -66,12 +68,21 @@ const router = createRouter({
   routes,
 })
 
-// 路由守卫示例（可按需启用） -------------------------------------------
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('token')
-//   if (to.path !== '/login' && !token) return next('/login')
-//   if (to.path === '/login' && token) return next('/dashboard')
-//   next()
-// })
+// 路由守卫 -----------------------------------------------------------
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+
+  // 登录页访问控制
+  if (to.path === '/login' && userStore.userInfo.username) {
+    return next('/dashboard')
+  }
+
+  // 非登录页访问控制
+  if (to.path !== '/login' && !userStore.userInfo.username) {
+    return next('/login')
+  }
+
+  next()
+})
 
 export default router

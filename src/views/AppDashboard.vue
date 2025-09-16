@@ -36,7 +36,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '../stores'
+import { useUserStore } from '@/stores/user'
 
 // 用户数据 store --------------------------------------------------
 const userStore = useUserStore()

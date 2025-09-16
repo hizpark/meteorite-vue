@@ -6,12 +6,11 @@
   2. 支持响应式布局，PC 折叠与移动端 Drawer
   3. 使用 <router-view /> 渲染子路由页面
   4. 管理菜单选中状态和打开状态
-  5. 提供注销功能
 -->
 
 <template>
   <!-- 后台布局容器 -->
-  <el-container :class="themeStore.theme" style="height: 100vh">
+  <el-container style="height: 100vh">
     <!-- 侧边栏 -->
     <AppSidebar
       :collapsed="isCollapsed"
@@ -26,12 +25,7 @@
     <!-- 主内容 -->
     <el-container style="flex-direction: column; height: 100vh">
       <!-- 顶部导航 -->
-      <AppHeader
-        :isCollapsed="isCollapsed"
-        :isMobile="isMobile"
-        @toggle-sidebar="toggleSidebar"
-        @logout="logout"
-      />
+      <AppHeader :isCollapsed="isCollapsed" :isMobile="isMobile" @toggle-sidebar="toggleSidebar" />
 
       <!-- 页面内容 -->
       <el-main>
@@ -46,10 +40,6 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
-// Store ----------------------------------------------------------------
-import { useUserStore } from '../stores'
-import { useThemeStore } from '../stores/theme'
-
 // 子组件 ---------------------------------------------------------------
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
@@ -60,10 +50,6 @@ defineOptions({ name: 'AdminLayout' })
 // 路由实例 -------------------------------------------------------------
 const router = useRouter()
 const route = useRoute()
-
-// 全局状态管理 ---------------------------------------------------------
-const userStore = useUserStore()
-const themeStore = useThemeStore()
 
 // 菜单状态 -------------------------------------------------------------
 const activeMenu = ref('dashboard')
@@ -123,11 +109,5 @@ const handleMenuSelect = (index) => {
   const path = Object.keys(menuMap).find((key) => menuMap[key].active === index)
   if (path) router.push(path)
   if (isMobile.value) drawerVisible.value = false
-}
-
-// 注销处理 -------------------------------------------------------------
-const logout = () => {
-  userStore.logout()
-  router.push('/login')
 }
 </script>

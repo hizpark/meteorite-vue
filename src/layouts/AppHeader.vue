@@ -1,13 +1,3 @@
-<!--
-  @file AppHeader.vue
-  @description 管理后台顶栏组件
-  功能概览：
-  1. 提供左侧折叠按钮（PC 折叠/移动端 Drawer 切换）
-  2. 提供右侧工具栏，包括主题切换和用户头像下拉
-  3. 使用 Element Plus 按钮、图标、Tooltip 和 Dropdown
-  4. 与父组件通过 emit 事件通信（toggle-sidebar, logout）
--->
-
 <template>
   <!-- 顶栏容器 -->
   <el-header class="app-header">
@@ -29,13 +19,10 @@
     <!-- 右侧工具栏 -->
     <div class="header-right">
       <!-- 切换主题按钮 -->
-      <el-tooltip
-        :content="themeStore.theme === 'light' ? '切换到暗色' : '切换到亮色'"
-        placement="bottom"
-      >
+      <el-tooltip :content="themeTooltip" placement="bottom">
         <el-button type="text" @click="themeStore.toggleTheme">
           <el-icon>
-            <component :is="themeStore.theme === 'light' ? Moon : Sunny" />
+            <component :is="themeIcon" />
           </el-icon>
         </el-button>
       </el-tooltip>
@@ -47,9 +34,9 @@
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item disabled> 欢迎，{{ userStore.userInfo?.username }} </el-dropdown-item>
+            <el-dropdown-item disabled> 欢迎，{{ username }} </el-dropdown-item>
             <el-dropdown-item divided @click="editProfile"> 修改资料 </el-dropdown-item>
-            <el-dropdown-item @click="$emit('logout')"> 退出登录 </el-dropdown-item>
+            <el-dropdown-item @click="handleLogout"> 退出登录 </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -58,30 +45,45 @@
 </template>
 
 <script setup>
-// 全局状态管理 --------------------------------------------------------
-import { useUserStore } from '@/stores'
-import { useThemeStore } from '@/stores/theme'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-// 图标 ---------------------------------------------------------------
+// Store
+import { useThemeStore } from '@/stores/theme'
+import { useUserStore } from '@/stores/user'
+
+// Icons
 import { Menu, Fold, Expand, Moon, Sunny, UserFilled } from '@element-plus/icons-vue'
 
-// 组件名 -------------------------------------------------------------
-defineOptions({ name: 'AppHeader' })
-
-// Props --------------------------------------------------------------
-const props = defineProps({
+// Props
+const { isCollapsed, isMobile } = defineProps({
   isCollapsed: { type: Boolean, default: false },
   isMobile: { type: Boolean, default: false },
 })
 
-// Store --------------------------------------------------------------
+// Stores
 const userStore = useUserStore()
 const themeStore = useThemeStore()
 
-// 编辑用户资料处理函数 -------------------------------------------------
+// Router
+const router = useRouter()
+
+// 用户名显示，默认游客
+const username = computed(() => userStore.userInfo.username || '游客')
+
+// 主题图标计算
+const themeIcon = computed(() => (themeStore.theme === 'light' ? Moon : Sunny))
+const themeTooltip = computed(() => (themeStore.theme === 'light' ? '切换到暗色' : '切换到亮色'))
+
+// 编辑资料
 const editProfile = () => {
-  console.log('编辑用户资料')
-  // TODO: 打开编辑资料页面或弹窗
+  router.push('/profile') // 跳转到编辑资料页面
+}
+
+// 退出登录
+const handleLogout = () => {
+  userStore.logout()
+  router.push('/login')
 }
 </script>
 
@@ -93,7 +95,6 @@ const editProfile = () => {
   align-items: center;
   padding: 0 20px;
   height: 40px;
-  /* 使用 Element Plus 系统变量，暗/亮模式自动生效 */
   border-bottom: 1px solid var(--el-border-color);
 }
 

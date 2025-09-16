@@ -36,6 +36,7 @@ import router from './router'
 // 状态管理 ----------------------------------------------------------------
 import { createPinia } from 'pinia'
 import { useThemeStore } from '@/stores/theme'
+import { useUserStore } from '@/stores/user'
 
 // UI 库 ------------------------------------------------------------------
 import 'element-plus/theme-chalk/src/index.scss'
@@ -44,24 +45,31 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 // 全局样式 ---------------------------------------------------------------
 import '@/styles/global.scss'
+;(async () => {
+  // 创建应用实例
+  const app = createApp(App)
 
-// 创建应用实例 ------------------------------------------------------------
-const app = createApp(App)
+  // 安装 Pinia
+  const pinia = createPinia()
+  app.use(pinia)
 
-// 插件安装 ---------------------------------------------------------------
-const pinia = createPinia()
-app.use(pinia)
+  // 初始化主题
+  const themeStore = useThemeStore(pinia)
+  themeStore.initTheme()
 
-const themeStore = useThemeStore(pinia)
-themeStore.initTheme()
+  // 初始化用户状态（从 localStorage / token 恢复）
+  const userStore = useUserStore(pinia)
+  await userStore.initUser()
 
-app.use(router)
-app.use(ElementPlus)
+  // 安装路由和 Element Plus
+  app.use(router)
+  app.use(ElementPlus)
 
-// 全局注册图标 -----------------------------------------------------------
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
-}
+  // 全局注册 Element Plus 图标
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 
-// 挂载应用 ---------------------------------------------------------------
-app.mount('#app')
+  // 挂载应用
+  app.mount('#app')
+})()

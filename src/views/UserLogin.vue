@@ -1,15 +1,3 @@
-<!--
-  @file Login.vue
-  @description CMS 登录表单组件（script setup + 图标+上浮标签）
-  本组件主要功能：
-  1. 左侧显示品牌模块和登录表单
-  2. 输入框采用图标+上浮标签设计，无左侧 label
-  3. 调用 Pinia store 保存用户信息
-  4. 登录成功后跳转 /dashboard
-  5. 响应式布局 & 动效增强
-  注意：右侧装饰图片由 AuthLayout.vue 控制
--->
-
 <template>
   <div class="login-container">
     <!-- 品牌模块 -->
@@ -39,10 +27,15 @@
     <!-- 登录表单卡片 -->
     <el-card class="login-card no-border">
       <h2 class="login-title">登录</h2>
-      <el-form :model="form" ref="loginForm" label-width="0">
+      <el-form :model="form" ref="loginForm" label-width="0" @submit.prevent="handleLogin">
         <!-- 用户名 -->
         <el-form-item>
-          <el-input v-model="form.username" placeholder="用户名" clearable>
+          <el-input
+            v-model="form.username"
+            placeholder="用户名"
+            clearable
+            @keyup.enter="handleLogin"
+          >
             <template #prefix>
               <el-icon><User /></el-icon>
             </template>
@@ -51,7 +44,13 @@
 
         <!-- 密码 -->
         <el-form-item>
-          <el-input v-model="form.password" type="password" placeholder="密码" clearable>
+          <el-input
+            v-model="form.password"
+            type="password"
+            placeholder="密码"
+            clearable
+            @keyup.enter="handleLogin"
+          >
             <template #prefix>
               <el-icon><Lock /></el-icon>
             </template>
@@ -60,7 +59,9 @@
 
         <!-- 登录按钮 -->
         <el-form-item>
-          <el-button type="primary" class="login-btn" @click="handleLogin"> 登录 </el-button>
+          <el-button type="primary" class="login-btn" :loading="loading" @click="handleLogin">
+            登录
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -75,8 +76,9 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
-import { useUserStore } from '../stores'
+import { useUserStore } from '@/stores/user'
 
 // 表单数据
 const form = reactive({ username: '', password: '' })
@@ -90,14 +92,36 @@ const router = useRouter()
 // 用户状态管理
 const userStore = useUserStore()
 
+// loading 状态
+const loading = ref(false)
+
 // 登录方法
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!form.username || !form.password) {
-    alert('请输入用户名和密码')
+    ElMessage.warning('请输入用户名和密码')
     return
   }
-  userStore.login({ username: form.username })
-  router.push('/dashboard')
+
+  loading.value = true
+  try {
+    const success = await userStore.login({
+      username: form.username,
+      password: form.password,
+    })
+
+    if (!success) {
+      ElMessage.error('用户名或密码错误')
+      return
+    }
+
+    ElMessage.success('登录成功！')
+    router.push('/dashboard')
+  } catch (err) {
+    console.error('登录出错:', err)
+    ElMessage.error('登录过程中出现错误，请重试')
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
