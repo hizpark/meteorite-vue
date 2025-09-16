@@ -47,3 +47,16 @@ export const logoutApi = (token) => {
     }, 500) // 模拟网络延迟
   })
 }
+
+export const getUserListApi = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      try {
+        const list = users.map(({ id, username, email }) => ({ id, username, email }))
+        resolve({ success: true, list })
+      } catch {
+        resolve({ success: false, list: [] })
+      }
+    }, 3000) // 模拟 1 秒网络延迟
+  })
+}

@@ -1,18 +1,9 @@
-<!-- UserList.vue
-     用户列表页组件
-
-     功能：
-     1. 显示用户表格
-     2. 支持搜索用户名
-     3. 支持新增、编辑、删除用户操作
-     4. 使用 BaseTable 组件封装表格和分页逻辑
--->
-
 <template>
   <!-- 用户表格 -->
   <BaseTable
     :data="users"
     :columns="columns"
+    :loading="loading"
     :search-fields="['username']"
     search-placeholder="搜索用户名"
     add-text="新增用户"
@@ -29,25 +20,19 @@
 </template>
 
 <script setup>
-// 路由实例 ----------------------------------------------------------
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import BaseTable from '../components/BaseTable.vue'
+import { getUserListApi } from '@/api/user'
 
 const router = useRouter()
 
-// 用户列表数据 ------------------------------------------------------
-const users = ref([
-  { id: 1, username: 'admin', email: 'admin@example.com' },
-  { id: 2, username: 'harper', email: 'harper@example.com' },
-  { id: 3, username: 'alice', email: 'alice@example.com' },
-  { id: 4, username: 'bob', email: 'bob@example.com' },
-  { id: 5, username: 'charlie', email: 'charlie@example.com' },
-  { id: 6, username: 'david', email: 'david@example.com' },
-  { id: 7, username: 'eve', email: 'eve@example.com' },
-])
+// 表格数据 & 状态
+const users = ref([])
+const loading = ref(false)
 
-// 表格列定义 --------------------------------------------------------
+// 表格列定义
 const columns = [
   { prop: 'id', label: 'ID', width: 80 },
   { prop: 'username', label: '用户名' },
@@ -55,14 +40,38 @@ const columns = [
   { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
 ]
 
-// 新增用户 ----------------------------------------------------------
-const addUser = () => router.push('/dashboard/users/new')
+// 获取用户列表
+const fetchUsers = async () => {
+  loading.value = true
+  try {
+    const res = await getUserListApi()
+    if (res.success) {
+      users.value = res.list
+    } else {
+      ElMessage.error('获取用户列表失败')
+    }
+  } catch (err) {
+    console.error('获取用户列表出错:', err)
+    ElMessage.error('获取用户列表出错，请重试')
+  } finally {
+    loading.value = false
+  }
+}
 
-// 编辑用户 ----------------------------------------------------------
-const editUser = (id) => router.push(`/dashboard/users/${id}/edit`)
+// 新增用户
+const addUser = () => router.push('/users/new')
 
-// 删除用户 ----------------------------------------------------------
+// 编辑用户
+const editUser = (id) => router.push(`/users/${id}/edit`)
+
+// 删除用户（本地模拟）
 const deleteUser = (id) => {
   users.value = users.value.filter((u) => u.id !== id)
+  ElMessage.success('用户已删除')
 }
+
+// 页面挂载时获取列表
+onMounted(() => {
+  fetchUsers()
+})
 </script>

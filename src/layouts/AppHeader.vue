@@ -81,9 +81,9 @@ const editProfile = () => {
 }
 
 // 退出登录
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/login')
+const handleLogout = async () => {
+  await userStore.logout()
+  router.push('/')
 }
 </script>
 

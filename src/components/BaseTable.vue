@@ -1,14 +1,5 @@
-<!-- BaseTable.vue
-     通用表格组件
-
-     功能：
-     1. 显示表格数据
-     2. 可选搜索（searchFields & searchPlaceholder）
-     3. 可选分页（pageSize & enablePagination）
-     4. 可插槽自定义操作列（slot="actions"）
-     5. 提供新增按钮事件（@add）
--->
-
+```vue
+<!-- BaseTable.vue -->
 <template>
   <el-card class="base-table-card no-border">
     <!-- 搜索栏（可选） -->
@@ -21,7 +12,7 @@
     </div>
 
     <!-- 表格 -->
-    <el-table :data="paginatedData" style="width: 100%">
+    <el-table :data="paginatedData" style="width: 100%" :loading="loading">
       <el-table-column
         v-for="col in columns"
         :key="col.prop"
@@ -48,13 +39,11 @@
 </template>
 
 <script setup>
-// 依赖 ---------------------------------------------------------------
 import { ref, computed, watch } from 'vue'
 
-// 组件名 -------------------------------------------------------------
 defineOptions({ name: 'BaseTable' })
 
-// Props 定义 ---------------------------------------------------------
+// Props
 const props = defineProps({
   data: { type: Array, default: () => [] },
   columns: { type: Array, default: () => [] },
@@ -64,18 +53,19 @@ const props = defineProps({
   addText: { type: String, default: '新增' },
   enableSearch: { type: Boolean, default: true },
   enablePagination: { type: Boolean, default: true },
+  loading: { type: Boolean, default: false }, // 新增 loading
 })
 
-// 事件定义 -----------------------------------------------------------
+// Emits
 const emit = defineEmits(['add'])
 
-// 搜索关键字 ---------------------------------------------------------
+// 搜索关键字
 const search = ref('')
 
-// 当前页码 -----------------------------------------------------------
+// 当前页码
 const currentPage = ref(1)
 
-// 过滤数据（搜索）---------------------------------------------------
+// 过滤数据（搜索）
 const filteredData = computed(() => {
   if (!props.enableSearch || !search.value) return props.data
   const keyword = search.value.toLowerCase()
@@ -84,13 +74,13 @@ const filteredData = computed(() => {
   )
 })
 
-// 分页数据 -----------------------------------------------------------
+// 分页数据
 const paginatedData = computed(() => {
   if (!props.enablePagination) return filteredData.value
   const start = (currentPage.value - 1) * props.pageSize
   return filteredData.value.slice(start, start + props.pageSize)
 })
 
-// 搜索变更重置页码 ---------------------------------------------------
+// 搜索变更重置页码
 watch(search, () => (currentPage.value = 1))
 </script>

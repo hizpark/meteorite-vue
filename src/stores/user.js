@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
-import { loginApi, getUserInfoApi, logoutApi } from '@/api/user'
+import { reactive, ref } from 'vue'
+import { loginApi, getUserInfoApi, logoutApi, getUserListApi } from '@/api/user'
 
 export const useUserStore = defineStore('user', () => {
   const userInfo = reactive({ username: null })
+
+  // 新增用户列表状态
+  const userList = ref([])
+  const loadingUserList = ref(false)
 
   const login = async ({ username, password }) => {
     const res = await loginApi({ username, password })
@@ -37,5 +41,24 @@ export const useUserStore = defineStore('user', () => {
     else logout()
   }
 
-  return { userInfo, login, logout, initUser }
+  // 新增：获取用户列表方法
+  const getUserList = async () => {
+    loadingUserList.value = true
+    try {
+      const res = await getUserListApi()
+      if (res.success) {
+        userList.value = res.list
+      } else {
+        userList.value = []
+        console.error('获取用户列表失败')
+      }
+    } catch (err) {
+      console.error('获取用户列表出错:', err)
+      userList.value = []
+    } finally {
+      loadingUserList.value = false
+    }
+  }
+
+  return { userInfo, login, logout, initUser, userList, loadingUserList, getUserList }
 })
