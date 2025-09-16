@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
-import { loginApi, getUserInfoApi } from '@/api/user'
+import { loginApi, getUserInfoApi, logoutApi } from '@/api/user'
 
 export const useUserStore = defineStore('user', () => {
   const userInfo = reactive({ username: null })
@@ -14,9 +14,19 @@ export const useUserStore = defineStore('user', () => {
     return true
   }
 
-  const logout = () => {
-    localStorage.removeItem('token')
-    userInfo.username = null
+  const logout = async () => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    try {
+      await logoutApi(token) // 等待后端登出完成
+    } catch (err) {
+      console.error('登出请求失败:', err)
+      // 即使失败，也继续清理前端状态
+    } finally {
+      localStorage.removeItem('token')
+      userInfo.username = null
+    }
   }
 
   const initUser = async () => {

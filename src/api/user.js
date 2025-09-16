@@ -28,3 +28,22 @@ export const getUserInfoApi = (token) => {
     }, 1000) // 模拟延迟
   })
 }
+
+export const logoutApi = (token) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      try {
+        // 模拟解析 token
+        const [username] = atob(token).split(':')
+        if (username) {
+          // 真实后端这里会把 token 加入黑名单，或清理 session
+          resolve({ success: true })
+        } else {
+          resolve({ success: false, message: '无效的 token' })
+        }
+      } catch {
+        resolve({ success: false, message: 'token 解析失败' })
+      }
+    }, 500) // 模拟网络延迟
+  })
+}
