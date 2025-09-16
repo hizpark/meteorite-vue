@@ -1,35 +1,58 @@
-# cms-vue
+# Meteorite Admin with Vue
 
-This template should help get you started developing with Vue 3 in Vite.
+Meteorite 管理系统前端，提供完整的用户管理、内容管理与仪表盘功能，支持响应式布局和主题切换，适用于企业后台系统演示或快速搭建项目原型。
 
-## Recommended IDE Setup
+## 功能概览
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **用户管理**：新增、编辑、删除用户
+- **内容管理**：新增、编辑、删除文章/内容
+- **仪表盘**：展示用户数、内容数及欢迎信息
+- **响应式布局**：
+  - PC 端：侧边栏折叠
+  - 移动端：Drawer 弹出侧边栏
+- **主题切换**：亮色 / 暗色模式
+- **登录/注销功能**：用户状态管理（Pinia）
+- **基于 Element Plus 的 UI 组件**
 
-## Customize configuration
+## 技术栈
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Vue 3（组合式 API）
+- Element Plus
+- Pinia（状态管理）
+- Vue Router
+- Sass / CSS3
 
-## Project Setup
+## 快速开始
+
+### 安装依赖
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发模式（热重载）
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+### 构建生产包
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### 代码规范检查
 
 ```sh
 npm run lint
 ```
+
+## 项目亮点
+
+- **组件化开发**：高复用组件，支持 Props、Slots 和事件通信
+- **全局状态管理**：Pinia 响应式数据驱动页面更新
+- **路由控制**：动态路由匹配和菜单高亮处理
+- **响应式界面**：Element Plus + Flexbox + Media Query
+- **UI 体验**：表格、卡片、分页和弹窗组件整合
+- **暗/亮主题**：系统级主题切换，自动适配颜色和背景

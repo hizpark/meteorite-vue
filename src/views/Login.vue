@@ -1,7 +1,16 @@
-<!-- src/views/Login.vue -->
+<!-- Login.vue
+     CMS 登录页组件
+
+     功能：
+     1. 居中显示登录卡片
+     2. 输入用户名和密码
+     3. 简单必填校验
+     4. 调用 Pinia store 保存登录用户信息
+     5. 登录成功后跳转到 /dashboard
+-->
 
 <template>
-  <!-- 整个页面居中布局 -->
+  <!-- 页面整体布局 -->
   <div
     class="login-page"
     style="display: flex; justify-content: center; align-items: center; height: 100vh"
@@ -12,8 +21,6 @@
       <h2 style="text-align: center; margin-bottom: 20px">CMS 登录</h2>
 
       <!-- 表单 -->
-      <!-- :model="form" 绑定表单数据对象 -->
-      <!-- ref="loginForm" 获取表单实例，后面可以做表单验证 -->
       <el-form :model="form" ref="loginForm" label-width="80px">
         <!-- 用户名输入框 -->
         <el-form-item label="用户名">
@@ -35,57 +42,44 @@
 </template>
 
 <script>
-// 组合式 API
 import { reactive, ref } from 'vue'
-// 用于页面跳转
 import { useRouter } from 'vue-router'
-// 引入 Pinia 的用户 store（在 src/stores/index.js 里定义）
 import { useUserStore } from '../stores'
 
 export default {
-  name: 'AppLogin', // 注意：组件名必须是多单词，这里避免 eslint 报警告
+  name: 'AppLogin',
 
   setup() {
-    // 定义表单数据，reactive 用来创建响应式对象
+    // 表单数据对象 ------------------------------------------------------
     const form = reactive({
       username: '',
       password: '',
     })
 
-    // 获取表单的引用（后面可以用来做表单校验）
+    // 表单实例引用 ------------------------------------------------------
     const loginForm = ref(null)
 
-    // 路由实例，用于跳转页面
+    // 路由实例 ----------------------------------------------------------
     const router = useRouter()
 
-    // 用户数据管理（Pinia store）
+    // 用户状态管理 ------------------------------------------------------
     const userStore = useUserStore()
 
-    // 登录方法
+    // 登录方法 ----------------------------------------------------------
     const handleLogin = () => {
       if (!form.username || !form.password) {
-        // 简单必填校验
-        return alert('请输入用户名和密码')
+        alert('请输入用户名和密码')
+        return
       }
 
-      // 模拟登录：把用户名存入 store
+      // 保存登录用户名到 Pinia store
       userStore.login({ username: form.username })
 
-      // 跳转到后台首页（Dashboard）
+      // 登录成功后跳转后台首页
       router.push('/dashboard')
     }
 
-    // setup 返回给模板使用的数据和方法
     return { form, loginForm, handleLogin }
   },
 }
 </script>
-
-<!--
-运行逻辑
-
-输入账号密码 → form.username 和 form.password 会被实时更新。
-点击登录按钮 → 触发 handleLogin。
-验证通过 → 调用 userStore.login() 保存登录信息。
-页面跳转 → 使用 router.push('/dashboard') 进入后台首页。
--->

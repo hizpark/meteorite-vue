@@ -1,4 +1,15 @@
+<!-- ContentList.vue
+     内容列表页组件
+
+     功能：
+     1. 显示内容表格
+     2. 支持搜索标题或作者
+     3. 支持新增、编辑、删除内容操作
+     4. 使用 BaseTable 组件封装表格和分页逻辑
+-->
+
 <template>
+  <!-- 内容表格 -->
   <BaseTable
     :data="contents"
     :columns="columns"
@@ -9,6 +20,7 @@
     :enable-pagination="false"
     @add="addContent"
   >
+    <!-- 表格操作列 -->
     <template #actions="{ row }">
       <el-button size="small" @click="editContent(row.id)">编辑</el-button>
       <el-button size="small" type="danger" @click="deleteContent(row.id)">删除</el-button>
@@ -23,9 +35,14 @@ import BaseTable from '../components/BaseTable.vue'
 
 export default {
   name: 'ContentList',
+
   components: { BaseTable },
+
   setup() {
+    // 路由实例 ----------------------------------------------------------
     const router = useRouter()
+
+    // 内容列表数据 ------------------------------------------------------
     const contents = ref([
       { id: 1, title: '第一篇文章', author: 'admin' },
       { id: 2, title: '第二篇文章', author: 'harper' },
@@ -36,6 +53,7 @@ export default {
       { id: 7, title: '第七篇文章', author: 'eve' },
     ])
 
+    // 表格列定义 --------------------------------------------------------
     const columns = [
       { prop: 'id', label: 'ID', width: 80 },
       { prop: 'title', label: '标题' },
@@ -43,9 +61,16 @@ export default {
       { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
     ]
 
+    // 新增内容 ----------------------------------------------------------
     const addContent = () => router.push('/dashboard/contents/new')
+
+    // 编辑内容 ----------------------------------------------------------
     const editContent = (id) => router.push(`/dashboard/contents/${id}/edit`)
-    const deleteContent = (id) => (contents.value = contents.value.filter((c) => c.id !== id))
+
+    // 删除内容 ----------------------------------------------------------
+    const deleteContent = (id) => {
+      contents.value = contents.value.filter((c) => c.id !== id)
+    }
 
     return { contents, columns, addContent, editContent, deleteContent }
   },

@@ -1,49 +1,67 @@
-// src/main.js
+/**
+ * @file main.js
+ * @description Vue 应用入口文件
+ *
+ * 功能概览：
+ * 1. 创建 Vue 应用实例
+ * 2. 安装全局插件：
+ *    - Pinia：状态管理
+ *    - Router：页面路由管理
+ *    - Element Plus：UI 组件库
+ * 3. 初始化应用主题（深色/浅色）
+ * 4. 全局注册 Element Plus 图标
+ * 5. 挂载应用到 HTML DOM
+ *
+ * 流程概览：
+ * createApp(App) -> 安装插件 (Pinia -> Router -> Element Plus)
+ * -> 初始化主题 -> 注册图标 -> app.mount('#app')
+ *
+ * 注意事项：
+ * - 插件安装顺序很重要
+ * - themeStore.initTheme() 必须在 Pinia 安装后执行
+ *
+ * 作者：Harper
+ * 日期：2025-09-16
+ */
 
-// 从 Vue 导入 createApp，用于创建 Vue 应用实例
+// Vue 核心 ----------------------------------------------------------------
 import { createApp } from 'vue'
 
-// 导入路由实例，用于页面跳转和路由管理
-import router from './router'
-
-// 导入 Pinia，用于状态管理
-import { createPinia } from 'pinia'
-
-// 引入 Element Plus 基础样式
-import 'element-plus/theme-chalk/src/index.scss'
-
-// 导入 Element Plus UI 框架
-import ElementPlus from 'element-plus'
-
-// 导入根组件 App.vue，整个应用的顶层组件
+// 根组件 ------------------------------------------------------------------
 import App from './App.vue'
 
+// 路由 --------------------------------------------------------------------
+import router from './router'
+
+// 状态管理 ----------------------------------------------------------------
+import { createPinia } from 'pinia'
 import { useThemeStore } from '@/stores/theme'
 
-// 全局注册图标
+// UI 库 ------------------------------------------------------------------
+import 'element-plus/theme-chalk/src/index.scss'
+import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+// 全局样式 ---------------------------------------------------------------
 import '@/styles/global.scss'
 
-// 创建 Vue 应用实例
+// 创建应用实例 ------------------------------------------------------------
 const app = createApp(App)
 
-// 安装 Pinia 插件，用于全局状态管理
+// 插件安装 ---------------------------------------------------------------
 const pinia = createPinia()
-// 初始化主题（必须在 app 挂载后调用）
+app.use(pinia)
+
 const themeStore = useThemeStore(pinia)
 themeStore.initTheme()
 
-// 安装路由插件，使 <router-view /> 能够生效
 app.use(router)
-app.use(pinia)
-
-// 安装 Element Plus，使所有 Element Plus 组件可用
 app.use(ElementPlus)
 
+// 全局注册图标 -----------------------------------------------------------
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-// 挂载 Vue 应用到 index.html 中的 <div id="app"></div>
+// 挂载应用 ---------------------------------------------------------------
 app.mount('#app')
