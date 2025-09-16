@@ -1,39 +1,70 @@
 <!--
   @file AuthLayout.vue
-  @description 登录/注册页面布局组件
+  @description CMS 登录/注册页面布局组件（左侧表单最大宽度 640px）
   本组件主要功能：
-  1. 提供居中的布局容器，用于 Auth 页面（如 Login.vue）
-  2. 使用 <router-view /> 渲染当前子路由组件
-  3. 样式仅作用于本布局，使用 scoped 作用域
+  1. 左侧放置表单区域，最大宽度 640px
+  2. 右侧放置装饰图片，占剩余空间
+  3. 极小屏幕优先显示表单，右侧图片隐藏
 -->
 
 <template>
-  <!-- 布局容器 -->
   <div class="auth-layout">
-    <main>
-      <!-- 子路由渲染占位 -->
-      <router-view />
-    </main>
+    <!-- 左侧表单区域 -->
+    <div class="auth-form">
+      <router-view></router-view>
+    </div>
+
+    <!-- 右侧装饰图片 -->
+    <div class="auth-image"></div>
   </div>
 </template>
 
 <script>
 export default {
-  // 组件名称 --------------------------------------------------------------
   name: 'AuthLayout',
-
-  // 组件逻辑 --------------------------------------------------------------
-  // 本组件主要提供布局，不包含业务逻辑
 }
 </script>
 
 <style scoped>
-/* 布局样式 -------------------------------------------------------------- */
+/* 布局整体 ---------------------------------------------------------- */
 .auth-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* 左侧表单区域 ------------------------------------------------------ */
+.auth-form {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  max-width: 640px; /* 最大宽度限制 */
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: #f0f2f5;
+  background-color: #f7f9fc;
+  flex-shrink: 0; /* 不被压缩 */
+}
+
+/* 右侧图片区域 ------------------------------------------------------ */
+.auth-image {
+  flex: 1; /* 占剩余空间 */
+  background: url('@/assets/images/auth-feature.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+/* 响应式：极小屏幕 ------------------------------------------------ */
+@media (max-width: 768px) {
+  .auth-layout {
+    flex-direction: column; /* 上下排列 */
+    height: 100vh; /* 保证整个容器占满屏幕高度 */
+  }
+  .auth-form {
+    height: 100%; /* 左侧表单区域占满父容器高度 */
+    max-width: 100%; /* 全宽适配小屏幕 */
+  }
+  .auth-image {
+    display: none; /* 隐藏右侧图片 */
+  }
 }
 </style>
