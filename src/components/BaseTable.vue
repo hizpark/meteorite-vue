@@ -10,7 +10,7 @@
 -->
 
 <template>
-  <el-card class="base-table-card">
+  <el-card class="base-table-card no-border">
     <!-- 搜索栏（可选） -->
     <div
       v-if="enableSearch"
@@ -47,62 +47,50 @@
   </el-card>
 </template>
 
-<script>
+<script setup>
+// 依赖 ---------------------------------------------------------------
 import { ref, computed, watch } from 'vue'
 
-export default {
-  name: 'BaseTable',
+// 组件名 -------------------------------------------------------------
+defineOptions({ name: 'BaseTable' })
 
-  props: {
-    data: { type: Array, default: () => [] },
-    columns: { type: Array, default: () => [] },
-    pageSize: { type: Number, default: 5 },
-    searchFields: { type: Array, default: () => [] },
-    searchPlaceholder: { type: String, default: '搜索' },
-    addText: { type: String, default: '新增' },
-    enableSearch: { type: Boolean, default: true },
-    enablePagination: { type: Boolean, default: true },
-  },
+// Props 定义 ---------------------------------------------------------
+const props = defineProps({
+  data: { type: Array, default: () => [] },
+  columns: { type: Array, default: () => [] },
+  pageSize: { type: Number, default: 5 },
+  searchFields: { type: Array, default: () => [] },
+  searchPlaceholder: { type: String, default: '搜索' },
+  addText: { type: String, default: '新增' },
+  enableSearch: { type: Boolean, default: true },
+  enablePagination: { type: Boolean, default: true },
+})
 
-  setup(props) {
-    // 搜索关键字 ------------------------------------------------------
-    const search = ref('')
+// 事件定义 -----------------------------------------------------------
+const emit = defineEmits(['add'])
 
-    // 当前页码 --------------------------------------------------------
-    const currentPage = ref(1)
+// 搜索关键字 ---------------------------------------------------------
+const search = ref('')
 
-    // 过滤数据（搜索）------------------------------------------------
-    const filteredData = computed(() => {
-      if (!props.enableSearch || !search.value) return props.data
-      const keyword = search.value.toLowerCase()
-      return props.data.filter((item) =>
-        props.searchFields.some((field) => String(item[field]).toLowerCase().includes(keyword)),
-      )
-    })
+// 当前页码 -----------------------------------------------------------
+const currentPage = ref(1)
 
-    // 分页数据 --------------------------------------------------------
-    const paginatedData = computed(() => {
-      if (!props.enablePagination) return filteredData.value
-      const start = (currentPage.value - 1) * props.pageSize
-      return filteredData.value.slice(start, start + props.pageSize)
-    })
+// 过滤数据（搜索）---------------------------------------------------
+const filteredData = computed(() => {
+  if (!props.enableSearch || !search.value) return props.data
+  const keyword = search.value.toLowerCase()
+  return props.data.filter((item) =>
+    props.searchFields.some((field) => String(item[field]).toLowerCase().includes(keyword)),
+  )
+})
 
-    // 搜索变更重置页码 ----------------------------------------------
-    watch(search, () => (currentPage.value = 1))
+// 分页数据 -----------------------------------------------------------
+const paginatedData = computed(() => {
+  if (!props.enablePagination) return filteredData.value
+  const start = (currentPage.value - 1) * props.pageSize
+  return filteredData.value.slice(start, start + props.pageSize)
+})
 
-    return { search, currentPage, filteredData, paginatedData }
-  },
-}
+// 搜索变更重置页码 ---------------------------------------------------
+watch(search, () => (currentPage.value = 1))
 </script>
-
-<style scoped>
-/* 去掉 el-card 默认边框，使用主题背景色区分 */
-.base-table-card {
-  border: none !important;
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-</style>

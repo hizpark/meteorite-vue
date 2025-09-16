@@ -41,111 +41,93 @@
   </el-container>
 </template>
 
-<script>
+<script setup>
+// Vue 依赖 ------------------------------------------------------------
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+
+// Store ----------------------------------------------------------------
 import { useUserStore } from '../stores'
 import { useThemeStore } from '../stores/theme'
+
+// 子组件 ---------------------------------------------------------------
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
 
-export default {
-  // 组件名称 --------------------------------------------------------------
-  name: 'AdminLayout',
+// 组件名 ---------------------------------------------------------------
+defineOptions({ name: 'AdminLayout' })
 
-  // 注册子组件 ------------------------------------------------------------
-  components: { AppSidebar, AppHeader },
+// 路由实例 -------------------------------------------------------------
+const router = useRouter()
+const route = useRoute()
 
-  // 组合式 API ------------------------------------------------------------
-  setup() {
-    // 路由实例 ------------------------------------------------------------
-    const router = useRouter()
-    const route = useRoute()
+// 全局状态管理 ---------------------------------------------------------
+const userStore = useUserStore()
+const themeStore = useThemeStore()
 
-    // 全局状态管理 --------------------------------------------------------
-    const userStore = useUserStore()
-    const themeStore = useThemeStore()
+// 菜单状态 -------------------------------------------------------------
+const activeMenu = ref('dashboard')
+const openMenus = ref([])
 
-    // 菜单状态 ------------------------------------------------------------
-    const activeMenu = ref('dashboard')
-    const openMenus = ref([])
+// 侧边栏状态 -----------------------------------------------------------
+const sidebarWidth = '200px'
+const isCollapsed = ref(false) // PC 折叠
+const drawerVisible = ref(false) // 移动端 Drawer
+const isMobile = ref(false) // 是否移动端
 
-    // 侧边栏状态 ----------------------------------------------------------
-    const sidebarWidth = '200px'
-    const isCollapsed = ref(false) // PC 折叠
-    const drawerVisible = ref(false) // 移动端 Drawer
-    const isMobile = ref(false) // 是否移动端
+// 窗口大小变化处理 -----------------------------------------------------
+const handleResize = () => {
+  isMobile.value = window.innerWidth < 768
+  if (!isMobile.value) drawerVisible.value = false
+}
 
-    // 窗口大小变化处理 ----------------------------------------------------
-    const handleResize = () => {
-      isMobile.value = window.innerWidth < 768
-      if (!isMobile.value) drawerVisible.value = false
-    }
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  handleResize()
+})
 
-    onMounted(() => {
-      window.addEventListener('resize', handleResize)
-      handleResize()
-    })
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', handleResize)
-    })
+// 切换侧边栏折叠/Drawer 显示 -------------------------------------------
+const toggleSidebar = () => {
+  if (isMobile.value) drawerVisible.value = !drawerVisible.value
+  else isCollapsed.value = !isCollapsed.value
+}
 
-    // 切换侧边栏折叠/Drawer 显示 ------------------------------------------
-    const toggleSidebar = () => {
-      if (isMobile.value) drawerVisible.value = !drawerVisible.value
-      else isCollapsed.value = !isCollapsed.value
-    }
+// 菜单映射表 -----------------------------------------------------------
+const menuMap = {
+  '/dashboard': { active: 'dashboard', open: [] },
+  '/dashboard/users': { active: 'users-list', open: ['users'] },
+  '/dashboard/users/new': { active: 'users-new', open: ['users'] },
+  '/dashboard/contents': { active: 'contents-list', open: ['contents'] },
+  '/dashboard/contents/new': { active: 'contents-new', open: ['contents'] },
+}
 
-    // 菜单映射表 ----------------------------------------------------------
-    const menuMap = {
-      '/dashboard': { active: 'dashboard', open: [] },
-      '/dashboard/users': { active: 'users-list', open: ['users'] },
-      '/dashboard/users/new': { active: 'users-new', open: ['users'] },
-      '/dashboard/contents': { active: 'contents-list', open: ['contents'] },
-      '/dashboard/contents/new': { active: 'contents-new', open: ['contents'] },
-    }
+// 更新菜单选中与展开状态 -----------------------------------------------
+const updateMenu = () => {
+  const path = route.path
+  const matched = Object.keys(menuMap).find((key) => path.startsWith(key))
+  if (matched) {
+    activeMenu.value = menuMap[matched].active
+    openMenus.value = menuMap[matched].open
+  }
+}
 
-    // 更新菜单选中与展开状态 ----------------------------------------------
-    const updateMenu = () => {
-      const path = route.path
-      const matched = Object.keys(menuMap).find((key) => path.startsWith(key))
-      if (matched) {
-        activeMenu.value = menuMap[matched].active
-        openMenus.value = menuMap[matched].open
-      }
-    }
+updateMenu()
+watch(() => route.path, updateMenu)
 
-    updateMenu()
-    watch(() => route.path, updateMenu)
+// 菜单选择处理 ---------------------------------------------------------
+const handleMenuSelect = (index) => {
+  const path = Object.keys(menuMap).find((key) => menuMap[key].active === index)
+  if (path) router.push(path)
+  if (isMobile.value) drawerVisible.value = false
+}
 
-    // 菜单选择处理 --------------------------------------------------------
-    const handleMenuSelect = (index) => {
-      const path = Object.keys(menuMap).find((key) => menuMap[key].active === index)
-      if (path) router.push(path)
-      if (isMobile.value) drawerVisible.value = false
-    }
-
-    // 注销处理 ------------------------------------------------------------
-    const logout = () => {
-      userStore.logout()
-      router.push('/login')
-    }
-
-    // 返回模板可用变量 ----------------------------------------------------
-    return {
-      userStore,
-      themeStore,
-      activeMenu,
-      openMenus,
-      handleMenuSelect,
-      logout,
-      sidebarWidth,
-      isCollapsed,
-      toggleSidebar,
-      drawerVisible,
-      isMobile,
-    }
-  },
+// 注销处理 -------------------------------------------------------------
+const logout = () => {
+  userStore.logout()
+  router.push('/login')
 }
 </script>

@@ -10,7 +10,7 @@
 
 <template>
   <!-- PC 侧边栏 -->
-  <el-aside v-if="!isMobile" :width="sidebarWidth" :class="{ collapsed: collapsed }">
+  <el-aside v-if="!isMobile" :width="sidebarWidth" :class="{ collapsed }">
     <!-- Brand -->
     <div class="sidebar-brand">
       <span class="logo-wrap">
@@ -125,52 +125,39 @@
   </el-drawer>
 </template>
 
-<script>
+<script setup>
 import { ref, watch } from 'vue'
 import { HomeFilled, User, Document } from '@element-plus/icons-vue'
 
-export default {
-  // 组件名称 ---------------------------------------------------------------
-  name: 'AppSidebar',
+// 组件名称 -------------------------------------------------------------
+defineOptions({ name: 'AppSidebar' })
 
-  // props ---------------------------------------------------------------
-  props: {
-    collapsed: Boolean, // PC 折叠状态
-    drawerVisible: Boolean, // 移动端 Drawer 可见状态
-    activeMenu: String, // 当前激活菜单
-    openMenus: Array, // 当前展开菜单
-    isMobile: Boolean, // 是否移动端
-    sidebarWidth: String, // 侧边栏宽度
-  },
+// Props --------------------------------------------------------------
+const props = defineProps({
+  collapsed: Boolean, // PC 折叠状态
+  drawerVisible: Boolean, // 移动端 Drawer 可见状态
+  activeMenu: String, // 当前激活菜单
+  openMenus: Array, // 当前展开菜单
+  isMobile: Boolean, // 是否移动端
+  sidebarWidth: String, // 侧边栏宽度
+})
 
-  // 事件 ---------------------------------------------------------------
-  emits: ['menuSelect', 'update:drawerVisible'],
+// Emit ---------------------------------------------------------------
+const emit = defineEmits(['menuSelect', 'update:drawerVisible'])
 
-  // 注册子组件 -----------------------------------------------------------
-  components: { HomeFilled, User, Document },
+// 内部响应式变量 -------------------------------------------------------
+const drawerVisibleLocal = ref(props.drawerVisible)
 
-  // 组合式 API -----------------------------------------------------------
-  setup(props, { emit }) {
-    // 内部响应式变量，避免直接修改 prop -----------------------------------
-    const drawerVisibleLocal = ref(props.drawerVisible)
+// 同步 prop 与本地变量 -------------------------------------------------
+watch(
+  () => props.drawerVisible,
+  (val) => (drawerVisibleLocal.value = val),
+)
+watch(drawerVisibleLocal, (val) => emit('update:drawerVisible', val))
 
-    // 同步 prop 与本地变量 -----------------------------------------------
-    watch(
-      () => props.drawerVisible,
-      (val) => (drawerVisibleLocal.value = val),
-    )
-    watch(drawerVisibleLocal, (val) => emit('update:drawerVisible', val))
-
-    // 菜单选择事件 --------------------------------------------------------
-    const handleMenuSelect = (index) => {
-      emit('menuSelect', index)
-    }
-
-    return {
-      drawerVisibleLocal,
-      handleMenuSelect,
-    }
-  },
+// 菜单选择事件 ---------------------------------------------------------
+const handleMenuSelect = (index) => {
+  emit('menuSelect', index)
 }
 </script>
 

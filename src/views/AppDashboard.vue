@@ -34,24 +34,16 @@
   </el-row>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import { useUserStore } from '../stores'
 
-export default {
-  name: 'AppDashboard',
+// 用户数据 store --------------------------------------------------
+const userStore = useUserStore()
 
-  setup() {
-    // 用户数据 store --------------------------------------------------
-    const userStore = useUserStore()
-
-    // 仪表盘数据 ------------------------------------------------------
-    const userCount = ref(123)
-    const contentCount = ref(45)
-
-    return { userStore, userCount, contentCount }
-  },
-}
+// 仪表盘数据 ------------------------------------------------------
+const userCount = ref(123)
+const contentCount = ref(45)
 </script>
 
 <style scoped>
@@ -69,12 +61,6 @@ export default {
   transition:
     background-color 0.3s,
     color 0.3s;
-}
-
-/* 无边框卡片 ---------------------------------------------------- */
-.no-border {
-  border: none !important; /* 去掉卡片边框 */
-  box-shadow: var(--el-box-shadow-light); /* 轻微阴影，暗/亮模式自动适配 */
 }
 
 /* 响应式垂直间距 ----------------------------------------------- */

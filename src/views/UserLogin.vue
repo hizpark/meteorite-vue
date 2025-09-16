@@ -37,7 +37,7 @@
     </div>
 
     <!-- 登录表单卡片 -->
-    <el-card class="login-card">
+    <el-card class="login-card no-border">
       <h2 class="login-title">登录</h2>
       <el-form :model="form" ref="loginForm" label-width="0">
         <!-- 用户名 -->

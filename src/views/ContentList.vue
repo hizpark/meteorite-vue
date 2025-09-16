@@ -28,51 +28,41 @@
   </BaseTable>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseTable from '../components/BaseTable.vue'
 
-export default {
-  name: 'ContentList',
+// 路由实例 ----------------------------------------------------------
+const router = useRouter()
 
-  components: { BaseTable },
+// 内容列表数据 ------------------------------------------------------
+const contents = ref([
+  { id: 1, title: '第一篇文章', author: 'admin' },
+  { id: 2, title: '第二篇文章', author: 'harper' },
+  { id: 3, title: '第三篇文章', author: 'alice' },
+  { id: 4, title: '第四篇文章', author: 'bob' },
+  { id: 5, title: '第五篇文章', author: 'charlie' },
+  { id: 6, title: '第六篇文章', author: 'david' },
+  { id: 7, title: '第七篇文章', author: 'eve' },
+])
 
-  setup() {
-    // 路由实例 ----------------------------------------------------------
-    const router = useRouter()
+// 表格列定义 --------------------------------------------------------
+const columns = [
+  { prop: 'id', label: 'ID', width: 80 },
+  { prop: 'title', label: '标题' },
+  { prop: 'author', label: '作者' },
+  { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
+]
 
-    // 内容列表数据 ------------------------------------------------------
-    const contents = ref([
-      { id: 1, title: '第一篇文章', author: 'admin' },
-      { id: 2, title: '第二篇文章', author: 'harper' },
-      { id: 3, title: '第三篇文章', author: 'alice' },
-      { id: 4, title: '第四篇文章', author: 'bob' },
-      { id: 5, title: '第五篇文章', author: 'charlie' },
-      { id: 6, title: '第六篇文章', author: 'david' },
-      { id: 7, title: '第七篇文章', author: 'eve' },
-    ])
+// 新增内容 ----------------------------------------------------------
+const addContent = () => router.push('/dashboard/contents/new')
 
-    // 表格列定义 --------------------------------------------------------
-    const columns = [
-      { prop: 'id', label: 'ID', width: 80 },
-      { prop: 'title', label: '标题' },
-      { prop: 'author', label: '作者' },
-      { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
-    ]
+// 编辑内容 ----------------------------------------------------------
+const editContent = (id) => router.push(`/dashboard/contents/${id}/edit`)
 
-    // 新增内容 ----------------------------------------------------------
-    const addContent = () => router.push('/dashboard/contents/new')
-
-    // 编辑内容 ----------------------------------------------------------
-    const editContent = (id) => router.push(`/dashboard/contents/${id}/edit`)
-
-    // 删除内容 ----------------------------------------------------------
-    const deleteContent = (id) => {
-      contents.value = contents.value.filter((c) => c.id !== id)
-    }
-
-    return { contents, columns, addContent, editContent, deleteContent }
-  },
+// 删除内容 ----------------------------------------------------------
+const deleteContent = (id) => {
+  contents.value = contents.value.filter((c) => c.id !== id)
 }
 </script>

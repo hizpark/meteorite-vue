@@ -10,7 +10,7 @@
 
 <template>
   <!-- 表单卡片 -->
-  <el-card class="user-form-card">
+  <el-card class="user-form-card no-border">
     <!-- 标题 -->
     <h2>{{ isEdit ? '编辑用户' : '新增用户' }}</h2>
 
@@ -34,57 +34,33 @@
   </el-card>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-export default {
-  name: 'UserForm',
+// 路由实例 ----------------------------------------------------------
+const route = useRoute()
 
-  setup() {
-    // 路由实例 ----------------------------------------------------------
-    const route = useRoute()
+// 判断是否编辑模式 --------------------------------------------------
+const isEdit = computed(() => !!route.params.id)
 
-    // 判断是否编辑模式 --------------------------------------------------
-    const isEdit = computed(() => !!route.params.id)
+// 表单数据对象 ------------------------------------------------------
+const form = reactive({
+  username: '',
+  email: '',
+})
 
-    // 表单数据对象 ------------------------------------------------------
-    const form = reactive({
-      username: '',
-      email: '',
-    })
+// 初始化表单 --------------------------------------------------------
+onMounted(() => {
+  if (isEdit.value) {
+    // 模拟加载已有用户数据
+    form.username = 'harper'
+    form.email = 'harper@example.com'
+  }
+})
 
-    // 初始化表单 --------------------------------------------------------
-    onMounted(() => {
-      if (isEdit.value) {
-        // 模拟加载已有用户数据
-        form.username = 'harper'
-        form.email = 'harper@example.com'
-      }
-    })
-
-    // 提交方法 ----------------------------------------------------------
-    const submit = () => {
-      alert(JSON.stringify(form))
-    }
-
-    return { form, isEdit, submit }
-  },
+// 提交方法 ----------------------------------------------------------
+const submit = () => {
+  alert(JSON.stringify(form))
 }
 </script>
-
-<style scoped>
-.user-form-card {
-  border: none !important; /* 去掉边框 */
-  background-color: var(--card-bg); /* 暗/亮主题自适应背景色 */
-  color: var(--text-color); /* 暗/亮主题文字颜色 */
-  transition:
-    background-color 0.3s,
-    color 0.3s; /* 平滑过渡 */
-}
-
-.el-card h2 {
-  margin-top: 0; /* 去掉上边距 */
-  margin-bottom: 30px; /* 下边距 */
-}
-</style>

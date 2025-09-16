@@ -1,7 +1,7 @@
 <!--
   @file AuthLayout.vue
   @description CMS 登录/注册页面布局组件（左侧表单最大宽度 640px）
-  本组件主要功能：
+  功能：
   1. 左侧放置表单区域，最大宽度 640px
   2. 右侧放置装饰图片，占剩余空间
   3. 极小屏幕优先显示表单，右侧图片隐藏
@@ -19,10 +19,9 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'AuthLayout',
-}
+<script setup>
+// 组件名称
+defineOptions({ name: 'AuthLayout' })
 </script>
 
 <style scoped>
@@ -42,7 +41,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7f9fc;
   flex-shrink: 0; /* 不被压缩 */
 }
 

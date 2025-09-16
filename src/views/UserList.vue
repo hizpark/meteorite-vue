@@ -28,51 +28,41 @@
   </BaseTable>
 </template>
 
-<script>
+<script setup>
+// 路由实例 ----------------------------------------------------------
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseTable from '../components/BaseTable.vue'
 
-export default {
-  name: 'UserList',
+const router = useRouter()
 
-  components: { BaseTable },
+// 用户列表数据 ------------------------------------------------------
+const users = ref([
+  { id: 1, username: 'admin', email: 'admin@example.com' },
+  { id: 2, username: 'harper', email: 'harper@example.com' },
+  { id: 3, username: 'alice', email: 'alice@example.com' },
+  { id: 4, username: 'bob', email: 'bob@example.com' },
+  { id: 5, username: 'charlie', email: 'charlie@example.com' },
+  { id: 6, username: 'david', email: 'david@example.com' },
+  { id: 7, username: 'eve', email: 'eve@example.com' },
+])
 
-  setup() {
-    // 路由实例 ----------------------------------------------------------
-    const router = useRouter()
+// 表格列定义 --------------------------------------------------------
+const columns = [
+  { prop: 'id', label: 'ID', width: 80 },
+  { prop: 'username', label: '用户名' },
+  { prop: 'email', label: '邮箱' },
+  { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
+]
 
-    // 用户列表数据 ------------------------------------------------------
-    const users = ref([
-      { id: 1, username: 'admin', email: 'admin@example.com' },
-      { id: 2, username: 'harper', email: 'harper@example.com' },
-      { id: 3, username: 'alice', email: 'alice@example.com' },
-      { id: 4, username: 'bob', email: 'bob@example.com' },
-      { id: 5, username: 'charlie', email: 'charlie@example.com' },
-      { id: 6, username: 'david', email: 'david@example.com' },
-      { id: 7, username: 'eve', email: 'eve@example.com' },
-    ])
+// 新增用户 ----------------------------------------------------------
+const addUser = () => router.push('/dashboard/users/new')
 
-    // 表格列定义 --------------------------------------------------------
-    const columns = [
-      { prop: 'id', label: 'ID', width: 80 },
-      { prop: 'username', label: '用户名' },
-      { prop: 'email', label: '邮箱' },
-      { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
-    ]
+// 编辑用户 ----------------------------------------------------------
+const editUser = (id) => router.push(`/dashboard/users/${id}/edit`)
 
-    // 新增用户 ----------------------------------------------------------
-    const addUser = () => router.push('/dashboard/users/new')
-
-    // 编辑用户 ----------------------------------------------------------
-    const editUser = (id) => router.push(`/dashboard/users/${id}/edit`)
-
-    // 删除用户 ----------------------------------------------------------
-    const deleteUser = (id) => {
-      users.value = users.value.filter((u) => u.id !== id)
-    }
-
-    return { users, columns, addUser, editUser, deleteUser }
-  },
+// 删除用户 ----------------------------------------------------------
+const deleteUser = (id) => {
+  users.value = users.value.filter((u) => u.id !== id)
 }
 </script>

@@ -57,51 +57,31 @@
   </el-header>
 </template>
 
-<script>
+<script setup>
+// 全局状态管理 --------------------------------------------------------
 import { useUserStore } from '@/stores'
 import { useThemeStore } from '@/stores/theme'
+
+// 图标 ---------------------------------------------------------------
 import { Menu, Fold, Expand, Moon, Sunny, UserFilled } from '@element-plus/icons-vue'
 
-export default {
-  // 组件名称 ---------------------------------------------------------------
-  name: 'AppHeader',
+// 组件名 -------------------------------------------------------------
+defineOptions({ name: 'AppHeader' })
 
-  // props ---------------------------------------------------------------
-  props: {
-    isCollapsed: {
-      type: Boolean,
-      default: false,
-    },
-    isMobile: {
-      type: Boolean,
-      default: false,
-    },
-  },
+// Props --------------------------------------------------------------
+const props = defineProps({
+  isCollapsed: { type: Boolean, default: false },
+  isMobile: { type: Boolean, default: false },
+})
 
-  // 组合式 API ------------------------------------------------------------
-  setup() {
-    // 全局状态管理 --------------------------------------------------------
-    const userStore = useUserStore()
-    const themeStore = useThemeStore()
+// Store --------------------------------------------------------------
+const userStore = useUserStore()
+const themeStore = useThemeStore()
 
-    // 编辑用户资料处理函数 -----------------------------------------------
-    const editProfile = () => {
-      console.log('编辑用户资料')
-      // TODO: 打开编辑资料页面或弹窗
-    }
-
-    return {
-      userStore,
-      themeStore,
-      Menu,
-      Fold,
-      Expand,
-      Moon,
-      Sunny,
-      UserFilled,
-      editProfile,
-    }
-  },
+// 编辑用户资料处理函数 -------------------------------------------------
+const editProfile = () => {
+  console.log('编辑用户资料')
+  // TODO: 打开编辑资料页面或弹窗
 }
 </script>
 
