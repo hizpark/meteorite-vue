@@ -1,30 +1,16 @@
 /**
  * @file router.js
- * @description Vue Router 配置文件
- *
- * 功能概览：
- * 1. 定义应用路由规则及嵌套路由
- * 2. 配置路由布局组件（AuthLayout、AdminLayout）
- * 3. 使用懒加载方式加载页面组件
- * 4. 提供路由守卫示例（可根据需求启用）
- *
- * 流程概览：
- * createRouter() -> 配置 history 模式 -> 定义 routes -> 可选守卫 -> export
- *
- * 作者：Harper
- * 日期：2025-09-16
+ * @description Vue Router 配置文件（安全版，无循环重定向）
  */
 
-// Vue Router 核心导入 ------------------------------------------------------
 import { createRouter, createWebHistory } from 'vue-router'
-
 import { useUserStore } from '@/stores/user'
 
-// 布局组件导入 -------------------------------------------------------------
+// 布局组件
 import AuthLayout from '../layouts/AuthLayout.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
 
-// 页面组件懒加载 -----------------------------------------------------------
+// 页面组件懒加载
 const Login = () => import('../views/UserLogin.vue')
 const Dashboard = () => import('../views/AppDashboard.vue')
 const UserList = () => import('../views/UserList.vue')
@@ -32,23 +18,25 @@ const UserForm = () => import('../views/UserForm.vue')
 const ContentList = () => import('../views/ContentList.vue')
 const ContentForm = () => import('../views/ContentForm.vue')
 
-// 路由规则定义 -------------------------------------------------------------
+// 路由规则
 const routes = [
-  { path: '/', redirect: '/login' },
-
-  // 登录路由
+  // 认证相关
   {
-    path: '/login',
+    path: '/auth',
     component: AuthLayout,
-    children: [{ path: '', component: Login }],
+    children: [
+      { path: 'login', component: Login },
+      { path: '', redirect: 'login' }, // /auth → /auth/login
+    ],
   },
 
-  // 管理后台路由
+  // 后台管理
   {
-    path: '/dashboard',
+    path: '/admin',
     component: AdminLayout,
     children: [
-      { path: '', component: Dashboard },
+      { path: '', redirect: 'dashboard' }, // /admin → /admin/dashboard
+      { path: 'dashboard', component: Dashboard },
       { path: 'users', component: UserList },
       { path: 'users/new', component: UserForm },
       { path: 'users/:id/edit', component: UserForm, props: true },
@@ -58,28 +46,30 @@ const routes = [
     ],
   },
 
-  // 捕获所有未匹配路由，重定向到 /dashboard ------------------------------
-  { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
+  // 全局未匹配 → 根据登录状态跳转
+  { path: '/:pathMatch(.*)*', redirect: '/admin/dashboard' },
 ]
 
-// 创建路由实例 ------------------------------------------------------------
+// 创建路由实例
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
-// 路由守卫 -----------------------------------------------------------
+// 路由守卫
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+  const isAuthPage = to.path.startsWith('/auth')
+  const isLoggedIn = !!userStore.userInfo.username
 
-  // 登录页访问控制
-  if (to.path === '/login' && userStore.userInfo.username) {
-    return next('/dashboard')
+  // 已登录访问登录页 → 仪表盘
+  if (isAuthPage && isLoggedIn) {
+    return next('/admin/dashboard')
   }
 
-  // 非登录页访问控制
-  if (to.path !== '/login' && !userStore.userInfo.username) {
-    return next('/login')
+  // 未登录访问后台 → 登录页
+  if (!isAuthPage && !isLoggedIn) {
+    return next('/auth/login')
   }
 
   next()

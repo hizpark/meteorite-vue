@@ -41,8 +41,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 
-defineOptions({ name: 'BaseTable' })
-
 // Props
 const props = defineProps({
   data: { type: Array, default: () => [] },
@@ -84,3 +82,9 @@ const paginatedData = computed(() => {
 // 搜索变更重置页码
 watch(search, () => (currentPage.value = 1))
 </script>
+
+<style scoped>
+.base-table-card {
+  margin-top: 20px;
+}
+</style>

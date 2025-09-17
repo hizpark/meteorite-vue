@@ -1,0 +1,28 @@
+[
+  {
+    "index": "dashboard",
+    "path": "/admin/dashboard",
+    "title": "仪表盘",
+    "icon": "Monitor"
+  },
+  {
+    "index": "users",
+    "path": "/admin/users",
+    "title": "用户管理",
+    "icon": "User",
+    "children": [
+      { "index": "users-list", "path": "/admin/users", "title": "用户列表" },
+      { "index": "users-new", "path": "/admin/users/new", "title": "新增用户" }
+    ]
+  },
+  {
+    "index": "contents",
+    "path": "/admin/contents",
+    "title": "内容管理",
+    "icon": "Document",
+    "children": [
+      { "index": "contents-list", "path": "/admin/contents", "title": "内容列表" },
+      { "index": "contents-new", "path": "/admin/contents/new", "title": "新增内容" }
+    ]
+  }
+]

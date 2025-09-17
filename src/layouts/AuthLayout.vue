@@ -19,11 +19,6 @@
   </div>
 </template>
 
-<script setup>
-// 组件名称
-defineOptions({ name: 'AuthLayout' })
-</script>
-
 <style scoped>
 /* 布局整体 ---------------------------------------------------------- */
 .auth-layout {

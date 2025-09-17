@@ -1,6 +1,6 @@
+```vue
 <!-- UserForm.vue
      用户表单页组件（新增 / 编辑用户）
-
      功能：
      1. 支持新增用户和编辑已有用户
      2. 用户名和邮箱输入
@@ -9,11 +9,20 @@
 -->
 
 <template>
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator="/">
+    <!-- 可点击返回首页 -->
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+
+    <!-- 可点击返回用户管理列表 -->
+    <el-breadcrumb-item :to="{ path: '/admin/users' }">用户管理</el-breadcrumb-item>
+
+    <!-- 当前操作，非链接 -->
+    <el-breadcrumb-item>{{ isEdit ? '编辑用户' : '新增用户' }}</el-breadcrumb-item>
+  </el-breadcrumb>
+
   <!-- 表单卡片 -->
   <el-card class="user-form-card no-border">
-    <!-- 标题 -->
-    <h2>{{ isEdit ? '编辑用户' : '新增用户' }}</h2>
-
     <!-- 用户表单 -->
     <el-form :model="form" label-width="80px" class="user-form">
       <!-- 用户名输入框 -->
@@ -38,19 +47,19 @@
 import { reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-// 路由实例 ----------------------------------------------------------
+// 路由实例
 const route = useRoute()
 
-// 判断是否编辑模式 --------------------------------------------------
+// 判断是否编辑模式
 const isEdit = computed(() => !!route.params.id)
 
-// 表单数据对象 ------------------------------------------------------
+// 表单数据对象
 const form = reactive({
   username: '',
   email: '',
 })
 
-// 初始化表单 --------------------------------------------------------
+// 初始化表单
 onMounted(() => {
   if (isEdit.value) {
     // 模拟加载已有用户数据
@@ -59,8 +68,18 @@ onMounted(() => {
   }
 })
 
-// 提交方法 ----------------------------------------------------------
+// 提交方法
 const submit = () => {
   alert(JSON.stringify(form))
 }
 </script>
+
+<style scoped>
+.user-form-card {
+  margin-top: 20px;
+}
+
+.user-form {
+  max-width: 500px;
+}
+</style>

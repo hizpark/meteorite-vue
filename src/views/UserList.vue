@@ -1,4 +1,12 @@
 <template>
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator="/">
+    <!-- 可点击返回首页 -->
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <!-- 当前操作，非链接 -->
+    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+  </el-breadcrumb>
+
   <!-- 用户表格 -->
   <BaseTable
     :data="users"

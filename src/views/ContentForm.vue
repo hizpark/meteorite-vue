@@ -3,6 +3,17 @@
 -->
 
 <template>
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator="/">
+    <!-- 可点击返回首页 -->
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+
+    <!-- 可点击返回用户管理列表 -->
+    <el-breadcrumb-item :to="{ path: '/admin/contents' }">内容管理</el-breadcrumb-item>
+
+    <!-- 当前操作，非链接 -->
+    <el-breadcrumb-item>{{ isEdit ? '编辑内容' : '新增内容' }}</el-breadcrumb-item>
+  </el-breadcrumb>
   <!-- 表单卡片 -->
   <el-card class="content-form-card no-border">
     <!-- 标题 -->
@@ -65,3 +76,9 @@ const submit = () => {
   alert(JSON.stringify(form))
 }
 </script>
+
+<style scoped>
+.content-form-card {
+  margin-top: 20px;
+}
+</style>
