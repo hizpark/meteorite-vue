@@ -1,6 +1,6 @@
 /**
  * @file router.js
- * @description Vue Router 配置文件（安全版，无循环重定向）
+ * @description Vue Router 配置文件（安全版，无循环重定向，基于 store.isLoggedIn）
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
@@ -26,7 +26,7 @@ const routes = [
     component: AuthLayout,
     children: [
       { path: 'login', component: Login },
-      { path: '', redirect: 'login' }, // /auth → /auth/login
+      { path: '', redirect: 'login' },
     ],
   },
 
@@ -35,7 +35,7 @@ const routes = [
     path: '/admin',
     component: AdminLayout,
     children: [
-      { path: '', redirect: 'dashboard' }, // /admin → /admin/dashboard
+      { path: '', redirect: 'dashboard' },
       { path: 'dashboard', component: Dashboard },
       { path: 'users', component: UserList },
       { path: 'users/new', component: UserForm },
@@ -47,7 +47,13 @@ const routes = [
   },
 
   // 全局未匹配 → 根据登录状态跳转
-  { path: '/:pathMatch(.*)*', redirect: '/admin/dashboard' },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: () => {
+      const userStore = useUserStore()
+      return userStore.isLoggedIn ? '/admin/dashboard' : '/auth/login'
+    },
+  },
 ]
 
 // 创建路由实例
@@ -59,17 +65,17 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+  const isLoggedIn = userStore.isLoggedIn
   const isAuthPage = to.path.startsWith('/auth')
-  const isLoggedIn = !!userStore.userInfo.username
-
-  // 已登录访问登录页 → 仪表盘
-  if (isAuthPage && isLoggedIn) {
-    return next('/admin/dashboard')
-  }
 
   // 未登录访问后台 → 登录页
   if (!isAuthPage && !isLoggedIn) {
     return next('/auth/login')
+  }
+
+  // 已登录访问登录页 → 仪表盘
+  if (isAuthPage && isLoggedIn) {
+    return next('/admin/dashboard')
   }
 
   next()

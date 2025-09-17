@@ -15,6 +15,12 @@
       <el-main>
         <router-view />
       </el-main>
+      <footer class="app-footer">
+        <p>
+          © 2025 Meteorite. All rights reserved. Developed by
+          <a href="https://me.hizpark.com" target="_blank" rel="noopener noreferrer"> Harper </a>
+        </p>
+      </footer>
     </el-container>
   </el-container>
 </template>

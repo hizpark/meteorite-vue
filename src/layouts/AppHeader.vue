@@ -83,7 +83,7 @@ const editProfile = () => {
 // 退出登录
 const handleLogout = async () => {
   await userStore.logout()
-  router.push('/')
+  router.replace('/auth/login')
 }
 </script>
 

@@ -31,7 +31,7 @@
         <el-form-item prop="username" :rules="[{ required: true, message: '请输入用户名' }]">
           <el-input
             v-model="form.username"
-            placeholder="用户名"
+            placeholder="Username"
             clearable
             @keyup.enter="handleLogin"
           >
@@ -46,7 +46,7 @@
           <el-input
             v-model="form.password"
             type="password"
-            placeholder="密码"
+            placeholder="Password"
             clearable
             @keyup.enter="handleLogin"
           >
@@ -67,7 +67,10 @@
 
     <!-- 底部版权 -->
     <div class="footer">
-      <p>© 2025 Meteorite. All rights reserved.</p>
+      <p>
+        © 2025 Meteorite. All rights reserved. Developed by
+        <a href="https://me.hizpark.com" target="_blank" rel="noopener noreferrer"> Harper </a>
+      </p>
     </div>
   </div>
 </template>
@@ -134,22 +137,29 @@ const handleLogin = async () => {
   align-items: center;
   margin-bottom: 30px;
 }
+
+.brand:hover {
+  cursor: default;
+  .brand-logo {
+    transform: rotate(15deg);
+  }
+  .brand-text {
+    color: var(--el-color-primary);
+  }
+}
+
 .brand-logo {
   width: 64px;
   height: 64px;
+  transition: color 0.3s ease;
   transition: transform 0.3s ease;
 }
-.brand-logo:hover {
-  transform: rotate(15deg);
-}
+
 .brand-text {
   font-size: 24px;
   font-weight: bold;
   margin-top: 10px;
   transition: color 0.3s ease;
-}
-.brand-text:hover {
-  color: #409eff;
 }
 
 /* 登录卡片 */
@@ -190,6 +200,14 @@ const handleLogin = async () => {
   color: #999;
   font-size: 12px;
   margin-top: 30px;
+  a {
+    color: inherit; /* 颜色和文字一致，保持低调 */
+    text-decoration: none;
+    margin-left: 2px; /* 与文字间距 */
+  }
+  a:hover {
+    color: var(--el-color-primary);
+  }
 }
 
 /* 修复输入时宽度跳跃 */
