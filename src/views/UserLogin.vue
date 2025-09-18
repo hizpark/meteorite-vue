@@ -58,7 +58,7 @@
 
         <!-- 登录按钮 -->
         <el-form-item>
-          <el-button type="primary" class="login-btn" :loading="loading" @click="handleLogin">
+          <el-button type="primary" class="login-btn" :loading="loggingIn" @click="handleLogin">
             登录
           </el-button>
         </el-form-item>
@@ -80,23 +80,26 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 const form = reactive({ username: '', password: '' })
+const loggingIn = ref(false)
+
 const loginForm = ref(null)
 const router = useRouter()
-const userStore = useUserStore()
-const loading = ref(false)
 
 const handleLogin = async () => {
+  loggingIn.value = true
+
   if (!form.username || !form.password) {
     ElMessage.warning('请输入用户名和密码')
     return
   }
 
-  loading.value = true
   try {
-    const success = await userStore.login({
+    const success = await authStore.login({
       username: form.username,
       password: form.password,
     })
@@ -112,7 +115,7 @@ const handleLogin = async () => {
     console.error('登录出错:', err)
     ElMessage.error('登录过程中出现错误，请重试')
   } finally {
-    loading.value = false
+    loggingIn.value = false
   }
 }
 </script>

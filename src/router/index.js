@@ -4,7 +4,8 @@
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores/user'
+// import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
 // 布局组件
 import AuthLayout from '../layouts/AuthLayout.vue'
@@ -50,8 +51,8 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     redirect: () => {
-      const userStore = useUserStore()
-      return userStore.isLoggedIn ? '/admin/dashboard' : '/auth/login'
+      const authStore = useAuthStore()
+      return authStore.isAuthenticated ? '/admin/dashboard' : '/auth/login'
     },
   },
 ]
@@ -64,20 +65,20 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
-  const isLoggedIn = userStore.isLoggedIn
+  const authStore = useAuthStore()
   const isAuthPage = to.path.startsWith('/auth')
 
-  // 未登录访问后台 → 登录页
-  if (!isAuthPage && !isLoggedIn) {
+  // 如果用户未认证且试图访问非登录页面，跳转到登录页面
+  if (!isAuthPage && !authStore.isAuthenticated) {
     return next('/auth/login')
   }
 
-  // 已登录访问登录页 → 仪表盘
-  if (isAuthPage && isLoggedIn) {
+  // 如果目标路径是 /login 且用户已认证，跳转到主页
+  if (isAuthPage && authStore.isAuthenticated) {
     return next('/admin/dashboard')
   }
 
+  // 允许访问目标页面
   next()
 })
 

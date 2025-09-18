@@ -50,7 +50,7 @@ import { useRouter } from 'vue-router'
 
 // Store
 import { useThemeStore } from '@/stores/theme'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
 // Icons
 import { Menu, Fold, Expand, Moon, Sunny, UserFilled } from '@element-plus/icons-vue'
@@ -62,14 +62,14 @@ const { isCollapsed, isMobile } = defineProps({
 })
 
 // Stores
-const userStore = useUserStore()
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
 
 // Router
 const router = useRouter()
 
 // 用户名显示，默认游客
-const username = computed(() => userStore.userInfo.username || '游客')
+const username = authStore.userInfo.username
 
 // 主题图标计算
 const themeIcon = computed(() => (themeStore.theme === 'light' ? Moon : Sunny))
@@ -82,7 +82,7 @@ const editProfile = () => {
 
 // 退出登录
 const handleLogout = async () => {
-  await userStore.logout()
+  await authStore.logout()
   router.replace('/auth/login')
 }
 </script>
