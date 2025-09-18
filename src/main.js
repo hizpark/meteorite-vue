@@ -44,8 +44,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-// 开发环境加载 Mock
-if (import.meta.env.MODE === 'development') {
+// 启用模拟数据
+if (import.meta.env.VITE_APP_MOCK === 'on') {
   import('@/mock/index.js')
 }
 
