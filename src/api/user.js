@@ -1,4 +1,4 @@
-import users from '@/mocks/users.json'
+import users from '@/mock/users.json'
 
 export const loginApi = ({ username, password }) => {
   return new Promise((resolve) => {

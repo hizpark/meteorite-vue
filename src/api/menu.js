@@ -1,4 +1,4 @@
-import menus from '@/mocks/menus.json'
+import menus from '@/mock/menus.json'
 
 export const getMenuListApi = () => {
   return new Promise((resolve) => {
