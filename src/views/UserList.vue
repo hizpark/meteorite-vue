@@ -32,7 +32,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import BaseTable from '../components/BaseTable.vue'
-import { getUserListApi } from '@/api/user'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 
@@ -52,7 +52,7 @@ const columns = [
 const fetchUsers = async () => {
   loading.value = true
   try {
-    const res = await getUserListApi()
+    const res = await useUserStore.getUserlist()
     if (res.success) {
       users.value = res.list
     } else {

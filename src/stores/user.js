@@ -10,7 +10,7 @@ import {
   toggleUserStatus as apiToggleUserStatus,
 } from '@/api/user'
 
-export const useUser = defineStore('user', {
+export const useUserStore = defineStore('user', {
   state: () => ({
     userList: [], // 存储用户列表
     userInfo: {}, // 存储单个用户信息
