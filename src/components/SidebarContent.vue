@@ -31,19 +31,16 @@
       @select="handleMenuSelect"
       :key="activeMenuLocal"
     >
-      <!-- 动态渲染菜单 -->
       <template v-for="item in menuList" :key="item.index">
         <el-menu-item v-if="!item.children" :index="item.path">
-          <el-icon v-if="item.icon">
-            <component :is="item.icon" />
-          </el-icon>
+          <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
           <template #title
             ><span>{{ item.title }}</span></template
           >
         </el-menu-item>
         <el-sub-menu v-else :index="item.index">
           <template #title>
-            <el-icon v-if="item.icon"><component :is="item.icon" /></el-icon>
+            <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
             <span>{{ item.title }}</span>
           </template>
           <el-menu-item v-for="child in item.children" :key="child.index" :index="child.path">
@@ -59,24 +56,22 @@
 import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
+import { Icon } from '@iconify/vue'
+
 const props = defineProps({
   collapsed: Boolean,
-  menuList: { type: Array, default: () => [] }, // 支持异步获取菜单
+  menuList: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['select'])
-
 const route = useRoute()
-
 const activeMenuLocal = ref('')
 const openMenusLocal = ref([])
 
-// 点击菜单
 function handleMenuSelect(index) {
   emit('select', index)
 }
 
-// 递归查找父菜单展开数组
 function findParentKeys(menus, path) {
   for (const menu of menus || []) {
     if (menu.path === path) return []
@@ -88,22 +83,17 @@ function findParentKeys(menus, path) {
   return null
 }
 
-// 恢复菜单高亮和展开状态
 function restoreMenuStatus() {
   activeMenuLocal.value = route.path
   openMenusLocal.value = findParentKeys(props.menuList, route.path) || []
 }
 
-// 初始化
 onMounted(() => restoreMenuStatus())
 
-// 路由变化自动更新
 watch(
   () => route.path,
   () => restoreMenuStatus(),
 )
-
-// 异步菜单加载后也更新
 watch(
   () => props.menuList,
   () => restoreMenuStatus(),
@@ -149,5 +139,27 @@ watch(
 
 .collapsed .sidebar-brand .brand-text {
   opacity: 0;
+}
+
+.el-menu-item span,
+.el-sub-menu__title span {
+  box-sizing: border-box;
+  line-height: 18px;
+  display: inline-flex;
+  align-items: center;
+  padding-top: 1px;
+  margin-left: 10px;
+}
+
+.el-sub-menu__title span {
+  padding-top: 2px;
+}
+
+.menu-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 </style>

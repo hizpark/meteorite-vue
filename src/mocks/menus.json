@@ -2,27 +2,27 @@
   {
     "index": "dashboard",
     "path": "/admin/dashboard",
-    "title": "仪表盘",
-    "icon": "Monitor"
+    "title": "Dashboard",
+    "icon": "mdi:monitor"
   },
   {
-    "index": "users",
-    "path": "/admin/users",
-    "title": "用户管理",
-    "icon": "User",
+    "index": "forms",
+    "path": "/admin/forms",
+    "title": "Forms",
+    "icon": "mdi:text-box-edit",
     "children": [
-      { "index": "users-list", "path": "/admin/users", "title": "用户列表" },
-      { "index": "users-new", "path": "/admin/users/new", "title": "新增用户" }
+      { "index": "form-basic", "path": "/admin/forms/basic", "title": "基础表单" },
+      { "index": "form-advanced", "path": "/admin/forms/advanced", "title": "复杂表单" }
     ]
   },
   {
-    "index": "contents",
-    "path": "/admin/contents",
-    "title": "内容管理",
-    "icon": "Document",
+    "index": "tables",
+    "path": "/admin/tables",
+    "title": "Tables",
+    "icon": "mdi:list-box-outline",
     "children": [
-      { "index": "contents-list", "path": "/admin/contents", "title": "内容列表" },
-      { "index": "contents-new", "path": "/admin/contents/new", "title": "新增内容" }
+      { "index": "user-table", "path": "/admin/tables/user", "title": "用户列表" },
+      { "index": "article-table", "path": "/admin/tables/article", "title": "文章列表" }
     ]
   }
 ]

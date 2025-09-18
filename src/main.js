@@ -27,11 +27,11 @@
 // Vue 核心 ----------------------------------------------------------------
 import { createApp } from 'vue'
 
-// 根组件 ------------------------------------------------------------------
-import App from './App.vue'
-
 // 路由 --------------------------------------------------------------------
 import router from './router'
+
+// 根组件 ------------------------------------------------------------------
+import App from './App.vue'
 
 // 状态管理 ----------------------------------------------------------------
 import { createPinia } from 'pinia'
@@ -53,6 +53,10 @@ import '@/styles/global.scss'
   const pinia = createPinia()
   app.use(pinia)
 
+  // 安装路由和 Element Plus
+  app.use(router)
+  app.use(ElementPlus)
+
   // 初始化主题
   const themeStore = useThemeStore(pinia)
   themeStore.initTheme()
@@ -60,10 +64,6 @@ import '@/styles/global.scss'
   // 初始化用户状态（从 localStorage / token 恢复）
   const userStore = useUserStore(pinia)
   await userStore.initUser()
-
-  // 安装路由和 Element Plus
-  app.use(router)
-  app.use(ElementPlus)
 
   // 全局注册 Element Plus 图标
   for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
