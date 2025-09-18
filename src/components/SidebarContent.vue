@@ -141,6 +141,10 @@ watch(
   opacity: 0;
 }
 
+.el-menu {
+  border-right: none;
+}
+
 .el-menu-item span,
 .el-sub-menu__title span {
   box-sizing: border-box;
