@@ -145,8 +145,22 @@ watch(
   top: 2px;
 }
 
+.collapsed .sidebar-brand {
+  width: 64px;
+  overflow: hidden;
+}
+
 .collapsed .sidebar-brand .brand-text {
   opacity: 0;
+}
+
+footer.app-footer {
+  margin: 14px 0;
+  transition: font-size 0.4s ease;
+}
+
+.collapsed footer.app-footer {
+  font-size: 6px;
 }
 
 .el-menu {
@@ -180,5 +194,6 @@ watch(
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 }
 </style>
