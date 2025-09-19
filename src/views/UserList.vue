@@ -23,7 +23,9 @@
       </el-input>
 
       <!-- 右侧添加按钮 -->
-      <el-button type="primary" class="add-button" @click="addUser">新增用户</el-button>
+      <el-button type="primary" class="add-button" @click="addUser">
+        <el-icon><Plus /></el-icon>
+      </el-button>
     </div>
 
     <!-- 表格 -->
