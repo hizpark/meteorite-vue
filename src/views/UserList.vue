@@ -1,85 +1,129 @@
 <template>
   <!-- 面包屑导航 -->
   <el-breadcrumb separator="/">
-    <!-- 可点击返回首页 -->
     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-    <!-- 当前操作，非链接 -->
     <el-breadcrumb-item>用户管理</el-breadcrumb-item>
   </el-breadcrumb>
 
-  <!-- 用户表格 -->
-  <BaseTable
-    :data="users"
-    :columns="columns"
-    :loading="loading"
-    :search-fields="['username']"
-    search-placeholder="搜索用户名"
-    add-text="新增用户"
-    :enable-search="true"
-    :enable-pagination="true"
-    @add="addUser"
-  >
-    <!-- 表格操作列 -->
-    <template #actions="{ row }">
-      <el-button size="small" @click="editUser(row.id)">编辑</el-button>
-      <el-button size="small" type="danger" @click="deleteUser(row.id)">删除</el-button>
-    </template>
-  </BaseTable>
+  <el-card class="base-table-card no-border">
+    <!-- 添加按钮 + 搜索 -->
+    <div class="toolbar">
+      <!-- 左侧搜索框 -->
+      <el-input
+        v-model="search"
+        placeholder="搜索用户名"
+        clearable
+        @clear="onSearch"
+        @keyup.enter="onSearch"
+        class="search-input"
+      >
+        <template #append>
+          <el-button size="small" type="primary" @click="onSearch">搜索</el-button>
+        </template>
+      </el-input>
+
+      <!-- 右侧添加按钮 -->
+      <el-button type="primary" class="add-button" @click="addUser">添加用户</el-button>
+    </div>
+
+    <!-- 表格 -->
+    <BaseTable
+      :data="userStore.userList"
+      :columns="userStore.columns"
+      :loading="userStore.loading.list"
+    >
+      <template #actions="{ row }">
+        <el-button size="small" @click="editUser(row.id)">编辑</el-button>
+        <el-button size="small" type="danger" @click="confirmDelete(row.id)">删除</el-button>
+      </template>
+    </BaseTable>
+
+    <!-- 分页组件 -->
+    <div style="text-align: right; margin-top: 10px">
+      <el-pagination
+        :current-page="userStore.currentPage"
+        :page-size="userStore.pageSize"
+        :total="userStore.totalCount"
+        layout="prev, pager, next"
+        @current-change="handlePageChange"
+      />
+    </div>
+  </el-card>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import BaseTable from '../components/BaseTable.vue'
 import { useUserStore } from '@/stores/user'
+import BaseTable from '@/components/BaseTable.vue'
+import router from '@/router'
 
-const router = useRouter()
+const userStore = useUserStore()
+const search = ref('')
 
-// 表格数据 & 状态
-const users = ref([])
-const loading = ref(false)
+// 获取列表函数，保留搜索关键词
+const fetchUserList = (page = userStore.currentPage) => {
+  userStore.getUserList({
+    page,
+    limit: userStore.pageSize,
+    search: search.value.trim(),
+  })
+}
 
-// 表格列定义
-const columns = [
-  { prop: 'id', label: 'ID', width: 80 },
-  { prop: 'username', label: '用户名' },
-  { prop: 'email', label: '邮箱' },
-  { prop: 'actions', label: '操作', width: 150, slot: 'actions' },
-]
+const addUser = () => router.push('/admin/users/new')
+const editUser = (id) => router.push(`/admin/users/${id}/edit`)
+import { ElMessageBox, ElMessage } from 'element-plus'
 
-// 获取用户列表
-const fetchUsers = async () => {
-  loading.value = true
+// 页面加载时获取列表
+onMounted(() => fetchUserList())
+
+// 搜索方法，搜索时页面回到第一页
+const onSearch = () => fetchUserList(1)
+
+// 分页回调，保持当前搜索关键词
+const handlePageChange = (page) => fetchUserList(page)
+
+const confirmDelete = async (id) => {
   try {
-    const res = await useUserStore.getUserlist()
-    if (res.success) {
-      users.value = res.list
-    } else {
-      ElMessage.error('获取用户列表失败')
-    }
+    await ElMessageBox.confirm('确定要删除该用户吗？此操作不可撤销。', '删除确认', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+
+    // 用户点击确定
+    await userStore.deleteUser(id)
+    ElMessage.success('删除成功')
   } catch (err) {
-    console.error('获取用户列表出错:', err)
-    ElMessage.error('获取用户列表出错，请重试')
-  } finally {
-    loading.value = false
+    // 用户点击取消或关闭弹窗
+    if (err !== 'cancel') {
+      console.error(err)
+      ElMessage.error('删除失败')
+    }
   }
 }
+</script>
 
-// 新增用户
-const addUser = () => router.push('/users/new')
-
-// 编辑用户
-const editUser = (id) => router.push(`/users/${id}/edit`)
-
-// 删除用户（本地模拟）
-const deleteUser = (id) => {
-  users.value = users.value.filter((u) => u.id !== id)
-  ElMessage.success('用户已删除')
+<style scoped>
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-// 页面挂载时获取列表
-onMounted(() => {
-  fetchUsers()
-})
-</script>
+.search-input {
+  flex: 1 1 200px;
+  max-width: 400px;
+  min-width: 180px;
+}
+
+.add-button {
+  flex: 0 0 auto;
+}
+
+.base-table-card {
+  margin-top: 20px;
+}
+</style>

@@ -6,7 +6,7 @@
       v-model:drawer-visible="drawerVisible"
       :isMobile="isMobile"
       :sidebarWidth="sidebarWidth"
-      :menuList="menuStore.menuList"
+      :menus="menuStore.menus"
     />
 
     <!-- 主内容 -->
@@ -29,7 +29,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
-import { useMenuStore } from '@/stores/menu.js'
+import { useMenuStore } from '@/stores/menu'
 
 const sidebarWidth = '200px'
 const isCollapsed = ref(false)
@@ -41,7 +41,7 @@ const menuStore = useMenuStore()
 
 // 异步获取菜单
 onMounted(async () => {
-  await menuStore.getMenuList()
+  await menuStore.fetchMenus()
 })
 
 // -------------------- 窗口尺寸处理 --------------------

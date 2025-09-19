@@ -24,7 +24,7 @@
   <!-- 表单卡片 -->
   <el-card class="user-form-card no-border">
     <!-- 用户表单 -->
-    <el-form :model="form" label-width="80px" class="user-form">
+    <el-form :model="form" @keyup.enter="submit" label-width="80px" class="user-form">
       <!-- 用户名输入框 -->
       <el-form-item label="用户名">
         <el-input v-model="form.username" placeholder="请输入用户名" />
@@ -45,10 +45,13 @@
 
 <script setup>
 import { reactive, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { ElMessage } from 'element-plus'
 
-// 路由实例
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
 
 // 判断是否编辑模式
 const isEdit = computed(() => !!route.params.id)
@@ -60,17 +63,45 @@ const form = reactive({
 })
 
 // 初始化表单
-onMounted(() => {
+onMounted(async () => {
   if (isEdit.value) {
-    // 模拟加载已有用户数据
-    form.username = 'harper'
-    form.email = 'harper@example.com'
+    const { data } = await userStore.getUserInfo(route.params.id)
+    form.username = data.username || ''
+    form.email = data.email || ''
   }
 })
 
 // 提交方法
-const submit = () => {
-  alert(JSON.stringify(form))
+const submit = async () => {
+  if (!form.username.trim() || !form.email.trim()) {
+    return ElMessage.warning('用户名和邮箱不能为空')
+  }
+
+  if (isEdit.value) {
+    // 编辑模式
+    const response = await userStore.updateUser(route.params.id, {
+      username: form.username.trim(),
+      email: form.email.trim(),
+    })
+    if (response.code === 200) {
+      ElMessage.success('更新成功')
+      router.push('/admin/users')
+    } else {
+      ElMessage.error(response.message || '更新失败')
+    }
+  } else {
+    // 新增模式
+    const response = await userStore.createUser({
+      username: form.username.trim(),
+      email: form.email.trim(),
+    })
+    if (response.code === 200) {
+      ElMessage.success('创建成功')
+      router.push('/admin/users')
+    } else {
+      ElMessage.error(response.message || '创建失败')
+    }
+  }
 }
 </script>
 

@@ -1,90 +1,76 @@
-```vue
-<!-- BaseTable.vue -->
 <template>
-  <el-card class="base-table-card no-border">
-    <!-- 搜索栏（可选） -->
-    <div
-      v-if="enableSearch"
-      style="display: flex; justify-content: space-between; margin-bottom: 10px"
+  <el-table :data="data" style="width: 100%" :loading="loading">
+    <!-- 普通列 -->
+    <el-table-column
+      v-for="(col, index) in normalColumns"
+      :key="`normal-${col.prop}-${index}`"
+      :prop="col.prop"
+      :label="col.label"
+      :width="col.width"
+      :min-width="col.minWidth || 100"
+      :sortable="col.sortable"
+      :align="col.align"
+      :fixed="col.fixed"
+      :show-overflow-tooltip="col.showOverflowTooltip"
+      :formatter="col.formatter"
+    />
+
+    <!-- 操作列 -->
+    <el-table-column
+      v-for="(col, index) in actionColumns"
+      :key="`action-${col.prop || 'actions'}-${col.label}-${index}`"
+      :label="col.label"
+      :width="col.width"
+      :min-width="col.minWidth || 150"
+      :align="col.align || 'center'"
+      :fixed="col.fixed"
     >
-      <el-input v-model="search" :placeholder="searchPlaceholder" style="width: 250px" clearable />
-      <el-button type="primary" @click="$emit('add')">{{ addText }}</el-button>
-    </div>
-
-    <!-- 表格 -->
-    <el-table :data="paginatedData" style="width: 100%" :loading="loading">
-      <el-table-column
-        v-for="col in columns"
-        :key="col.prop"
-        :prop="col.prop"
-        :label="col.label"
-        :width="col.width"
-      >
-        <template #default="scope" v-if="col.slot === 'actions'">
-          <slot name="actions" :row="scope.row" />
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 分页（可选） -->
-    <div v-if="enablePagination" style="text-align: right; margin-top: 10px">
-      <el-pagination
-        v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="filteredData.length"
-        layout="prev, pager, next"
-      />
-    </div>
-  </el-card>
+      <template #default="scope">
+        <!-- 使用传入 slot，slotName 可自定义 -->
+        <slot :name="col.slotName || 'actions'" :row="scope.row">
+          <!-- 默认按钮，可通过 showDefaultActions 控制显示 -->
+          <template v-if="col.showDefaultActions !== false">
+            <el-button size="small">查看</el-button>
+            <el-button size="small" type="primary">编辑</el-button>
+          </template>
+        </slot>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { computed } from 'vue'
 
-// Props
 const props = defineProps({
-  data: { type: Array, default: () => [] },
-  columns: { type: Array, default: () => [] },
-  pageSize: { type: Number, default: 5 },
-  searchFields: { type: Array, default: () => [] },
-  searchPlaceholder: { type: String, default: '搜索' },
-  addText: { type: String, default: '新增' },
-  enableSearch: { type: Boolean, default: true },
-  enablePagination: { type: Boolean, default: true },
-  loading: { type: Boolean, default: false }, // 新增 loading
+  data: {
+    type: Array,
+    default: () => [],
+  },
+  columns: {
+    type: Array,
+    default: () => [],
+    validator: (columns) => {
+      return columns.every((col) => {
+        // 操作列允许没有 prop，但必须有 label
+        if (col.slot) return !!col.label
+        return !!col.prop && !!col.label
+      })
+    },
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-// Emits
-const emit = defineEmits(['add'])
+/** 普通列（不带 slot） */
+const normalColumns = computed(() => props.columns.filter((col) => !col.slot))
 
-// 搜索关键字
-const search = ref('')
-
-// 当前页码
-const currentPage = ref(1)
-
-// 过滤数据（搜索）
-const filteredData = computed(() => {
-  if (!props.enableSearch || !search.value) return props.data
-  const keyword = search.value.toLowerCase()
-  return props.data.filter((item) =>
-    props.searchFields.some((field) => String(item[field]).toLowerCase().includes(keyword)),
-  )
-})
-
-// 分页数据
-const paginatedData = computed(() => {
-  if (!props.enablePagination) return filteredData.value
-  const start = (currentPage.value - 1) * props.pageSize
-  return filteredData.value.slice(start, start + props.pageSize)
-})
-
-// 搜索变更重置页码
-watch(search, () => (currentPage.value = 1))
+/** 操作列（带 slot） */
+const actionColumns = computed(() => props.columns.filter((col) => col.slot))
 </script>
 
 <style scoped>
-.base-table-card {
-  margin-top: 20px;
-}
+/* 可根据需求添加全局表格样式 */
 </style>

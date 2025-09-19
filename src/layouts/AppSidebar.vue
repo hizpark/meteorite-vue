@@ -1,12 +1,12 @@
 <template>
   <!-- PC 侧边栏 -->
   <el-aside v-if="!isMobile" :width="sidebarWidth" :class="{ collapsed }">
-    <SidebarContent :collapsed="collapsed" :menuList="menuList" @select="handleMenuSelect" />
+    <SidebarContent :collapsed="collapsed" :menus="menus" @select="handleMenuSelect" />
   </el-aside>
 
   <!-- 移动端 Drawer -->
   <el-drawer v-else v-model="drawerVisibleLocal" direction="ltr" size="208px" :with-header="false">
-    <SidebarContent :collapsed="collapsed" :menuList="menuList" @select="handleMenuSelect" />
+    <SidebarContent :collapsed="collapsed" :menus="menus" @select="handleMenuSelect" />
   </el-drawer>
 </template>
 
@@ -20,7 +20,7 @@ const props = defineProps({
   drawerVisible: Boolean,
   isMobile: Boolean,
   sidebarWidth: String,
-  menuList: Array,
+  menus: Array,
 })
 
 const emit = defineEmits(['update:drawerVisible'])

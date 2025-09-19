@@ -31,7 +31,7 @@
       @select="handleMenuSelect"
       :key="activeMenuLocal"
     >
-      <template v-for="item in menuList" :key="item.index">
+      <template v-for="item in menus" :key="item.index">
         <el-menu-item v-if="!item.children" :index="item.path">
           <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
           <template #title
@@ -60,7 +60,7 @@ import { Icon } from '@iconify/vue'
 
 const props = defineProps({
   collapsed: Boolean,
-  menuList: { type: Array, default: () => [] },
+  menus: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['select'])
