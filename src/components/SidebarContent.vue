@@ -1,54 +1,62 @@
 <template>
-  <div>
-    <!-- Brand -->
-    <div class="sidebar-brand">
-      <span class="logo-wrap">
-        <!-- SVG Logo -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="64px"
-          height="64px"
-          viewBox="0 0 256 256"
-          style="fill: currentColor; stroke: currentColor"
-          class="brand-logo"
-        >
-          <path
-            fill-rule="evenodd"
-            d="m379.495 134.862 294.99-103.144-39.236 172.365-177.318-2.426Zm322.888-78.946 154.521 279.642-3.031 190.178-188.327-308.02 36.836-161.8Zm146.894 524.226L602.29 757.387 417.226 638.962l48.98-404.776 172.894 2.3L849.283 580.15zm-457.787.154L279.06 336.925l153.154-93.406-40.724 336.78zm-90.02-294.913 51.61-130.304 67.61 57.528-119.226 72.77z"
-            style="stroke-width: 1.46557"
-            transform="matrix(.35278 0 0 .35278 -72.372 -11.19)"
-          />
-        </svg>
-      </span>
-      <span class="brand-text">Meteorite</span>
-    </div>
-
-    <!-- 菜单 -->
-    <el-menu
-      :collapse="collapsed"
-      v-model:default-active="activeMenuLocal"
-      :default-openeds="openMenusLocal"
-      @select="handleMenuSelect"
-      :key="activeMenuLocal"
-    >
-      <template v-for="item in menus" :key="item.index">
-        <el-menu-item v-if="!item.children" :index="item.path">
-          <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
-          <template #title
-            ><span>{{ item.title }}</span></template
+  <div class="sidebar-wrap">
+    <div class="sidebar-content">
+      <!-- Brand -->
+      <div class="sidebar-brand">
+        <span class="logo-wrap">
+          <!-- SVG Logo -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64px"
+            height="64px"
+            viewBox="0 0 256 256"
+            style="fill: currentColor; stroke: currentColor"
+            class="brand-logo"
           >
-        </el-menu-item>
-        <el-sub-menu v-else :index="item.index">
-          <template #title>
+            <path
+              fill-rule="evenodd"
+              d="m379.495 134.862 294.99-103.144-39.236 172.365-177.318-2.426Zm322.888-78.946 154.521 279.642-3.031 190.178-188.327-308.02 36.836-161.8Zm146.894 524.226L602.29 757.387 417.226 638.962l48.98-404.776 172.894 2.3L849.283 580.15zm-457.787.154L279.06 336.925l153.154-93.406-40.724 336.78zm-90.02-294.913 51.61-130.304 67.61 57.528-119.226 72.77z"
+              style="stroke-width: 1.46557"
+              transform="matrix(.35278 0 0 .35278 -72.372 -11.19)"
+            />
+          </svg>
+        </span>
+        <span class="brand-text">Meteorite</span>
+      </div>
+
+      <!-- 菜单 -->
+      <el-menu
+        :collapse="collapsed"
+        v-model:default-active="activeMenuLocal"
+        :default-openeds="openMenusLocal"
+        @select="handleMenuSelect"
+        :key="activeMenuLocal"
+      >
+        <template v-for="item in menus" :key="item.index">
+          <el-menu-item v-if="!item.children" :index="item.path">
             <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
-            <span>{{ item.title }}</span>
-          </template>
-          <el-menu-item v-for="child in item.children" :key="child.index" :index="child.path">
-            {{ child.title }}
+            <template #title
+              ><span>{{ item.title }}</span></template
+            >
           </el-menu-item>
-        </el-sub-menu>
-      </template>
-    </el-menu>
+          <el-sub-menu v-else :index="item.index">
+            <template #title>
+              <Icon v-if="item.icon" :icon="item.icon" class="menu-icon" />
+              <span>{{ item.title }}</span>
+            </template>
+            <el-menu-item v-for="child in item.children" :key="child.index" :index="child.path">
+              {{ child.title }}
+            </el-menu-item>
+          </el-sub-menu>
+        </template>
+      </el-menu>
+    </div>
+    <footer class="app-footer">
+      <p>
+        © 2025
+        <a href="https://me.hizpark.com" target="_blank" rel="noopener noreferrer"> Harper </a>
+      </p>
+    </footer>
   </div>
 </template>
 
@@ -165,5 +173,12 @@ watch(
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
+}
+
+.sidebar-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 </style>

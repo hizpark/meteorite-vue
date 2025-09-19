@@ -76,10 +76,10 @@ body {
  * ===========================================================================
  */
 .app-footer {
-  border-top: 1px solid var(--el-border-color);
-  padding: 0 20px;
+  margin: 10px 0;
   color: #999;
   font-size: 12px;
+  text-align: center;
   a {
     color: inherit; /* 颜色和文字一致，保持低调 */
     text-decoration: none; /* 或 none，视设计而定 */

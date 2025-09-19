@@ -19,9 +19,11 @@ export const useUserStore = defineStore('user', {
       delete: false,
     },
     currentPage: 1,
-    pageSize: 15,
+    pageSize: 16,
     totalCount: 0,
     error: null,
+    appendMode: false, // 新增追加模式状态
+    cachedPages: {}, // 缓存已加载页
     columns: [
       { prop: 'id', label: 'ID', width: 80 },
       { prop: 'username', label: '用户名' },
@@ -54,10 +56,22 @@ export const useUserStore = defineStore('user', {
         const result = this._handleResponse(response)
 
         if (result.code === 200) {
-          this.userList = result.data
           this.totalCount = result.total
           this.currentPage = page
           this.pageSize = limit
+
+          if (this.appendMode) {
+            // 追加模式：缓存当前页，合并所有已缓存页
+            this.cachedPages[page] = result.data
+            this.userList = Object.keys(this.cachedPages)
+              .sort((a, b) => a - b)
+              .map((p) => this.cachedPages[p])
+              .flat()
+          } else {
+            // 普通模式：直接替换列表
+            this.userList = result.data
+            this.cachedPages = { [page]: result.data } // 保留当前页缓存（可选）
+          }
         } else {
           this.error = result.message || '获取用户列表失败'
         }
@@ -69,6 +83,19 @@ export const useUserStore = defineStore('user', {
       } finally {
         this.loading.list = false
       }
+    },
+
+    /** 切换模式时，刷新数据或清空缓存 */
+    async setAppendMode(mode) {
+      this.appendMode = mode
+      // 清空缓存和列表
+      this.cachedPages = {}
+      this.userList = []
+      this.currentPage = 1
+      this.totalCount = 0
+
+      // 加载第一页
+      await this.getUserList({ page: 1, limit: this.pageSize })
     },
 
     /** 设置分页并刷新列表 */
