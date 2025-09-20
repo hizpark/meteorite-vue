@@ -68,7 +68,7 @@
     <!-- 底部版权 -->
     <div class="footer">
       <p>
-        © 2025 Meteorite. All rights reserved. Developed by
+        © 2025
         <a href="https://me.hizpark.com" target="_blank" rel="noopener noreferrer"> Harper </a>
       </p>
     </div>
@@ -129,8 +129,8 @@ const handleLogin = async () => {
   align-items: center;
   justify-content: space-between;
   transition: all 0.3s ease;
-  min-height: 640px;
-  max-height: 960px;
+  min-height: 540px;
+  max-height: 720px;
 }
 
 /* 品牌 */
