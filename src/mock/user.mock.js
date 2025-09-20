@@ -5,7 +5,7 @@ import Mock from 'mockjs'
 let usersDB = []
 
 // 初始化 50 个用户
-for (let i = 1; i <= 50; i++) {
+for (let i = 1; i <= 500; i++) {
   usersDB.push({
     id: i,
     username: `user${i}`,

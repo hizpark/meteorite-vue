@@ -247,5 +247,12 @@ const confirmDelete = async (id) => {
     transform: rotate(90deg);
     display: inline-block; /* 确保旋转生效 */
   }
+
+  ::v-deep(.vertical-pagination .btn-quickprev),
+  ::v-deep(.vertical-pagination .btn-quicknext) {
+    position: relative !important;
+    margin-left: -6px !important;
+    transform: rotate(90deg);
+  }
 }
 </style>
