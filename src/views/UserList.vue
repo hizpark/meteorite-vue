@@ -46,31 +46,33 @@
       </BaseTable>
     </el-card>
 
-    <el-card class="pager-table-card no-border">
-      <!-- 模式开关 -->
-      <div
-        class="pagination-mode-switch"
-        style="margin-bottom: 8px; display: flex; justify-content: center"
-        :title="appendMode ? '追加模式 / 翻页数据追加到尾部' : '传统分页 / 翻页替换表格'"
-      >
-        <el-switch
-          v-model="appendMode"
-          active-color="#409EFF"
-          inactive-color="#C0C4CC"
-          @change="onModeChange"
-        />
-      </div>
+    <el-card class="pager-card no-border">
+      <div class="pager-card-inner">
+        <!-- 模式开关 -->
+        <div
+          class="pagination-mode-switch"
+          style="margin-bottom: 8px; display: flex; justify-content: center"
+          :title="appendMode ? '追加模式 / 翻页数据追加到尾部' : '传统分页 / 翻页替换表格'"
+        >
+          <el-switch
+            v-model="appendMode"
+            active-color="#409EFF"
+            inactive-color="#C0C4CC"
+            @change="onModeChange"
+          />
+        </div>
 
-      <!-- 分页组件 -->
-      <div style="text-align: right">
-        <el-pagination
-          class="vertical-pagination"
-          :current-page="userStore.currentPage"
-          :page-size="userStore.pageSize"
-          :total="userStore.totalCount"
-          layout="prev, pager, next"
-          @current-change="handlePageChange"
-        />
+        <!-- 分页组件 -->
+        <div style="text-align: right">
+          <el-pagination
+            class="vertical-pagination"
+            :current-page="userStore.currentPage"
+            :page-size="userStore.pageSize"
+            :total="userStore.totalCount"
+            layout="prev, pager, next"
+            @current-change="handlePageChange"
+          />
+        </div>
       </div>
     </el-card>
   </div>
@@ -191,40 +193,59 @@ const confirmDelete = async (id) => {
   flex: 0 0 auto;
 }
 
-.data-table {
-  flex-grow: 1;
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  min-height: 0; /* 允许子元素溢出滚动，flex 父级必须加这个 */
-}
-
 .base-table-card {
   flex-grow: 1;
   min-height: 0; /* 同样保证内部滚动生效 */
   overflow-y: auto;
 }
 
-.vertical-pagination {
+.data-table {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 可选，居中分页按钮 */
+  gap: 10px;
+  justify-content: space-between;
+  min-height: 0; /* 允许子元素溢出滚动，flex 父级必须加这个 */
 }
 
-::v-deep(.vertical-pagination .el-pager) {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center; /* 可选 */
+.pager-card {
+  flex-shrink: 0; /* 不允许压缩 */
 }
 
-::v-deep(.vertical-pagination .el-pager li) {
-  display: block !important; /* 让 li 垂直排列 */
-  margin: 4px 0; /* 间距可调 */
+.pager-card-inner {
+  display: flex;
+  gap: 10px;
 }
 
-::v-deep(.vertical-pagination .btn-prev),
-::v-deep(.vertical-pagination .btn-next) {
-  transform: rotate(90deg);
-  display: inline-block; /* 确保旋转生效 */
+@media (min-width: 1200px) {
+  .data-table {
+    flex-direction: row;
+  }
+  .vertical-pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 可选，居中分页按钮 */
+  }
+
+  .pager-card-inner {
+    flex-direction: column;
+  }
+
+  ::v-deep(.vertical-pagination .el-pager) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center; /* 可选 */
+  }
+
+  ::v-deep(.vertical-pagination .el-pager li) {
+    display: block !important; /* 让 li 垂直排列 */
+    margin: 4px 0; /* 间距可调 */
+  }
+
+  ::v-deep(.vertical-pagination .btn-prev),
+  ::v-deep(.vertical-pagination .btn-next) {
+    transform: rotate(90deg);
+    display: inline-block; /* 确保旋转生效 */
+  }
 }
 </style>
