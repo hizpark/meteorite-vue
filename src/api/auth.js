@@ -1,10 +1,9 @@
-// src/api/auth.js
-import apiClient from '@/api/index'
+import request from '@/utils/request'
 
 export const login = (credentials) => {
-  return apiClient.post('/login', credentials)
+  return request.post('/login', credentials)
 }
 
 export const logout = () => {
-  return apiClient.post('/logout')
+  return request.post('/logout')
 }

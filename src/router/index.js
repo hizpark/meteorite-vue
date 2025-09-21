@@ -12,12 +12,12 @@ import AuthLayout from '../layouts/AuthLayout.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
 
 // 页面组件懒加载
-const Login = () => import('../views/UserLogin.vue')
-const Dashboard = () => import('../views/AppDashboard.vue')
-const UserList = () => import('../views/UserList.vue')
-const UserForm = () => import('../views/UserForm.vue')
-const ContentList = () => import('../views/ContentList.vue')
-const ContentForm = () => import('../views/ContentForm.vue')
+const Login = () => import('../views/auth/UserLogin.vue')
+const Dashboard = () => import('../views/dashboard/AppDashboard.vue')
+const UserList = () => import('../views/system/UserList.vue')
+const UserForm = () => import('../views/system/UserForm.vue')
+const ContentList = () => import('../views/content/ContentList.vue')
+const ContentForm = () => import('../views/content/ContentForm.vue')
 
 // 路由规则
 const routes = [

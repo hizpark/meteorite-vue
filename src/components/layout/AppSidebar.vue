@@ -13,7 +13,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import SidebarContent from '@/components/SidebarContent.vue'
+import SidebarContent from '@/components/layout/SidebarContent.vue'
 
 const props = defineProps({
   collapsed: Boolean,

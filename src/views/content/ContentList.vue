@@ -38,7 +38,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import BaseTable from '../components/BaseTable.vue'
+import BaseTable from '../components/common/BaseTable.vue'
 
 // 路由实例 ----------------------------------------------------------
 const router = useRouter()

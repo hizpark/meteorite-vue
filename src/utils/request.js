@@ -1,7 +1,7 @@
-// src/api/index.js
+// src/utils/request.js
 import axios from 'axios'
 
-const apiClient = axios.create({
+const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000,
   headers: {
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 })
 
 // 请求拦截器
-apiClient.interceptors.request.use((config) => {
+request.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -19,7 +19,7 @@ apiClient.interceptors.request.use((config) => {
 })
 
 // 响应拦截器
-apiClient.interceptors.response.use(
+request.interceptors.response.use(
   (response) => response.data,
   (error) => {
     console.error('API 请求错误:', error)
@@ -27,4 +27,4 @@ apiClient.interceptors.response.use(
   },
 )
 
-export default apiClient
+export default request

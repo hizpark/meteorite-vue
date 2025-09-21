@@ -48,8 +48,8 @@
 <script setup>
 import { reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/system/user'
 
 const route = useRoute()
 const router = useRouter()

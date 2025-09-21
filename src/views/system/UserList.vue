@@ -79,12 +79,12 @@
 </template>
 
 <script setup>
-import { smoothScroll } from '@/utils/smoothScroll.js'
 import { ref, onMounted, nextTick } from 'vue'
-import { useUserStore } from '@/stores/user'
-import BaseTable from '@/components/BaseTable.vue'
-import router from '@/router'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/system/user'
+import { smoothScroll } from '@/utils/smoothScroll.js'
+import BaseTable from '@/components/common/BaseTable.vue'
+import router from '@/router'
 
 const userStore = useUserStore()
 const search = ref('')

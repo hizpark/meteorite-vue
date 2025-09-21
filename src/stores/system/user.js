@@ -5,7 +5,7 @@ import {
   createUser as apiCreateUser,
   updateUser as apiUpdateUser,
   deleteUser as apiDeleteUser,
-} from '@/api/user'
+} from '@/api/system/user'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
