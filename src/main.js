@@ -44,10 +44,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-// 启用模拟数据
-if (import.meta.env.VITE_APP_MOCK === 'on') {
-  import('@/mock/index.js')
-}
-
 // 挂载应用
 app.mount('#app')
