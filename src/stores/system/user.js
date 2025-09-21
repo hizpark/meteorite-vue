@@ -61,16 +61,13 @@ export const useUserStore = defineStore('user', {
           this.pageSize = limit
 
           if (this.appendMode) {
-            // 追加模式：缓存当前页，合并所有已缓存页
+            // 追加模式：直接追加到列表末尾，不做排序
+            this.userList.push(...result.data)
             this.cachedPages[page] = result.data
-            this.userList = Object.keys(this.cachedPages)
-              .sort((a, b) => a - b)
-              .map((p) => this.cachedPages[p])
-              .flat()
           } else {
             // 普通模式：直接替换列表
             this.userList = result.data
-            this.cachedPages = { [page]: result.data } // 保留当前页缓存（可选）
+            this.cachedPages = { [page]: result.data } // 可选保留当前页缓存
           }
         } else {
           this.error = result.message || '获取用户列表失败'

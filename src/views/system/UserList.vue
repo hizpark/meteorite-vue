@@ -60,7 +60,8 @@
 
         <!-- 分页组件 -->
         <el-pagination
-          class="vertical-pagination"
+          class="pagination"
+          :class="{ 'load-more-mode': appendMode }"
           :current-page="userStore.currentPage"
           :page-size="userStore.pageSize"
           :total="userStore.totalCount"
@@ -116,6 +117,8 @@ const tableWrapper = ref(null)
 
 /** 复用版 handlePageChange */
 const handlePageChange = async (page) => {
+  if (appendMode.value && page < userStore.currentPage) return // 禁止 Prev 点击
+
   const wrapper = tableWrapper.value?.$el || tableWrapper.value
   let prevScrollHeight = 0
 
@@ -163,12 +166,17 @@ const confirmDelete = async (id) => {
 </script>
 
 <style scoped>
+/* ========================
+   面包屑、工具栏、表格布局
+======================== */
 .el-breadcrumb {
   margin-bottom: 20px;
 }
+
 .toolbar-card {
   margin-bottom: 10px;
 }
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -189,7 +197,7 @@ const confirmDelete = async (id) => {
 
 .base-table-card {
   flex-grow: 1;
-  min-height: 0; /* 同样保证内部滚动生效 */
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -199,11 +207,11 @@ const confirmDelete = async (id) => {
   flex-direction: column;
   gap: 10px;
   justify-content: space-between;
-  min-height: 0; /* 允许子元素溢出滚动，flex 父级必须加这个 */
+  min-height: 0;
 }
 
 .pager-card {
-  flex-shrink: 0; /* 不允许压缩 */
+  flex-shrink: 0;
 }
 
 .pager-card-inner {
@@ -211,39 +219,58 @@ const confirmDelete = async (id) => {
   gap: 10px;
 }
 
+/* ========================
+   追加模式样式
+======================== */
+::v-deep(.pagination.load-more-mode .btn-prev.is-first) {
+  cursor: not-allowed !important;
+  color: var(--el-pagination-button-disabled-color);
+}
+
+/* 隐藏非当前页码 */
+::v-deep(.pagination.load-more-mode .el-pager li:not(.is-active)) {
+  display: none !important;
+}
+
+/* ========================
+   响应式布局优化
+======================== */
 @media (min-width: 1200px) {
   .data-table {
     flex-direction: row;
   }
-  .vertical-pagination {
+
+  .pagination {
     display: flex;
     flex-direction: column;
-    align-items: center; /* 可选，居中分页按钮 */
+    align-items: center;
   }
 
   .pager-card-inner {
     flex-direction: column;
   }
 
-  ::v-deep(.vertical-pagination .el-pager) {
+  /* 垂直排列页码 */
+  ::v-deep(.pagination .el-pager) {
     display: flex !important;
     flex-direction: column !important;
-    align-items: center; /* 可选 */
+    align-items: center;
   }
 
-  ::v-deep(.vertical-pagination .el-pager li) {
-    display: block !important; /* 让 li 垂直排列 */
-    margin: 4px 0; /* 间距可调 */
+  ::v-deep(.pagination .el-pager li) {
+    display: block !important;
+    margin: 4px 0;
   }
 
-  ::v-deep(.vertical-pagination .btn-prev),
-  ::v-deep(.vertical-pagination .btn-next) {
+  /* Prev/Next 旋转样式 */
+  ::v-deep(.pagination .btn-prev),
+  ::v-deep(.pagination .btn-next) {
     transform: rotate(90deg);
-    display: inline-block; /* 确保旋转生效 */
+    display: inline-block;
   }
 
-  ::v-deep(.vertical-pagination .btn-quickprev),
-  ::v-deep(.vertical-pagination .btn-quicknext) {
+  ::v-deep(.pagination .btn-quickprev),
+  ::v-deep(.pagination .btn-quicknext) {
     position: relative !important;
     margin-left: -6px !important;
     transform: rotate(90deg);
