@@ -25,4 +25,18 @@ export default defineConfig({
     }),
     vueDevTools(),
   ],
+  build: {
+    chunkSizeWarningLimit: 1000, // 调整 chunk 警告阈值为 1 MB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('element-plus')) return 'vendor-element-plus'
+            if (id.includes('echarts')) return 'vendor-echarts'
+            return 'vendor'
+          }
+        },
+      },
+    },
+  },
 })

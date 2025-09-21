@@ -9,40 +9,38 @@
 -->
 
 <template>
-  <div>
-    <!-- 面包屑导航 -->
-    <el-breadcrumb separator="/">
-      <!-- 可点击返回首页 -->
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator="/">
+    <!-- 可点击返回首页 -->
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
 
-      <!-- 可点击返回用户管理列表 -->
-      <el-breadcrumb-item :to="{ path: '/admin/users' }">用户管理</el-breadcrumb-item>
+    <!-- 可点击返回用户管理列表 -->
+    <el-breadcrumb-item :to="{ path: '/admin/users' }">用户管理</el-breadcrumb-item>
 
-      <!-- 当前操作，非链接 -->
-      <el-breadcrumb-item>{{ isEdit ? '编辑用户' : '新增用户' }}</el-breadcrumb-item>
-    </el-breadcrumb>
+    <!-- 当前操作，非链接 -->
+    <el-breadcrumb-item>{{ isEdit ? '编辑用户' : '新增用户' }}</el-breadcrumb-item>
+  </el-breadcrumb>
 
-    <!-- 表单卡片 -->
-    <el-card class="user-form-card no-border">
-      <!-- 用户表单 -->
-      <el-form :model="form" @keyup.enter="submit" label-width="80px" class="user-form">
-        <!-- 用户名输入框 -->
-        <el-form-item label="用户名">
-          <el-input v-model="form.username" placeholder="请输入用户名" />
-        </el-form-item>
+  <!-- 表单卡片 -->
+  <el-card class="user-form-card no-border">
+    <!-- 用户表单 -->
+    <el-form :model="form" @keyup.enter="submit" label-width="80px" class="user-form">
+      <!-- 用户名输入框 -->
+      <el-form-item label="用户名">
+        <el-input v-model="form.username" placeholder="请输入用户名" />
+      </el-form-item>
 
-        <!-- 邮箱输入框 -->
-        <el-form-item label="邮箱">
-          <el-input v-model="form.email" placeholder="请输入邮箱" />
-        </el-form-item>
+      <!-- 邮箱输入框 -->
+      <el-form-item label="邮箱">
+        <el-input v-model="form.email" placeholder="请输入邮箱" />
+      </el-form-item>
 
-        <!-- 提交按钮 -->
-        <el-form-item>
-          <el-button type="primary" @click="submit">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-  </div>
+      <!-- 提交按钮 -->
+      <el-form-item>
+        <el-button type="primary" @click="submit">提交</el-button>
+      </el-form-item>
+    </el-form>
+  </el-card>
 </template>
 
 <script setup>
@@ -110,6 +108,9 @@ const submit = async () => {
 <style scoped>
 .user-form-card {
   margin-top: 20px;
+  flex-grow: 1;
+  min-height: 0; /* 同样保证内部滚动生效 */
+  overflow-y: auto;
 }
 
 .user-form {

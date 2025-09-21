@@ -49,30 +49,24 @@
     <el-card class="pager-card no-border">
       <div class="pager-card-inner">
         <!-- 模式开关 -->
-        <div
-          class="pagination-mode-switch"
-          style="margin-bottom: 8px; display: flex; justify-content: center"
+
+        <el-switch
+          v-model="appendMode"
+          active-color="#409EFF"
+          inactive-color="#C0C4CC"
+          @change="onModeChange"
           :title="appendMode ? '追加模式 / 翻页数据追加到尾部' : '传统分页 / 翻页替换表格'"
-        >
-          <el-switch
-            v-model="appendMode"
-            active-color="#409EFF"
-            inactive-color="#C0C4CC"
-            @change="onModeChange"
-          />
-        </div>
+        />
 
         <!-- 分页组件 -->
-        <div style="text-align: right">
-          <el-pagination
-            class="vertical-pagination"
-            :current-page="userStore.currentPage"
-            :page-size="userStore.pageSize"
-            :total="userStore.totalCount"
-            layout="prev, pager, next"
-            @current-change="handlePageChange"
-          />
-        </div>
+        <el-pagination
+          class="vertical-pagination"
+          :current-page="userStore.currentPage"
+          :page-size="userStore.pageSize"
+          :total="userStore.totalCount"
+          layout="prev, pager, next"
+          @current-change="handlePageChange"
+        />
       </div>
     </el-card>
   </div>

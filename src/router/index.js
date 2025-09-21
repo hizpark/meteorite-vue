@@ -8,16 +8,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 // 布局组件
-import AuthLayout from '../layouts/AuthLayout.vue'
-import AdminLayout from '../layouts/AdminLayout.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // 页面组件懒加载
-const Login = () => import('../views/auth/UserLogin.vue')
-const Dashboard = () => import('../views/dashboard/AppDashboard.vue')
-const UserList = () => import('../views/system/UserList.vue')
-const UserForm = () => import('../views/system/UserForm.vue')
-const ContentList = () => import('../views/content/ContentList.vue')
-const ContentForm = () => import('../views/content/ContentForm.vue')
+const Login = () => import('@/views/auth/UserLogin.vue')
+const Dashboard = () => import('@/views/dashboard/AppDashboard.vue')
+const UserList = () => import('@/views/system/UserList.vue')
+const UserForm = () => import('@/views/system/UserForm.vue')
+const ContentList = () => import('@/views/content/ContentList.vue')
+const ContentForm = () => import('@/views/content/ContentForm.vue')
 
 // 路由规则
 const routes = [
