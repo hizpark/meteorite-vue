@@ -27,4 +27,6 @@ request.interceptors.response.use(
   },
 )
 
+console.log('BaseURL from env:', import.meta.env.VITE_API_BASE_URL)
+
 export default request

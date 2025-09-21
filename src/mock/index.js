@@ -1,8 +1,12 @@
-// src/mock/index.js
+// 导入 mock 数据
+import '@/mock/auth.mock'
+import '@/mock/user.mock'
+import '@/mock/menu.mock'
+// 可以根据需要继续添加更多的 mock 数据文件
 
-// 导入 mock 数据文件即可
-import './menu.mock'
-import './auth.mock'
-import './user.mock'
+// 让 MockJS 在应用启动时启动
+import Mock from 'mockjs'
 
-// 如果未来有新的 mock 文件，只需在这里导入即可
+Mock.setup({
+  timeout: '200-600', // 模拟延时，避免请求响应过快
+})
